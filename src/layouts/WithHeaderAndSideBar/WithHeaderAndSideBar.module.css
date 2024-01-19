@@ -1,0 +1,14 @@
+.renderArea {
+  width: 93vw;
+  display: inline-block;
+  padding: 1em 2em 1em 2em;
+  height: auto !important;
+}
+
+.sideBarContainer {
+  display: inline-block;
+  max-width: 5vw;
+  position: absolute;
+  right: 0;
+  margin-top: 16px;
+}

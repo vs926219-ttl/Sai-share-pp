@@ -1,0 +1,194 @@
+.popContainer {
+    width: 620px;
+    /* padding: 50px 40px; */
+    margin: 0 auto;
+    border-radius: 0;
+  }
+  .popupBox {
+    border-radius: 0;
+    width: 620px !important;
+  }
+  .title {
+    color: #fff;
+    font-weight: 500;
+    font-size: 18px;
+    display: block;
+    margin: -16px -24px 10px -24px;
+    padding: 12px;
+    background: #EFF7FF;
+    display: flex;
+    align-items: center;
+  }
+  
+  .txt {
+    padding-left: 12px;
+    font-weight: 600;
+    display: inline-block;
+    color: #146DA2;
+  }
+  
+  .content {
+    margin-top: -20px;
+    margin-bottom: 1px;
+    margin-right: 1px;
+  }
+  .label {
+    font-size: 14px;
+    letter-spacing: 0px;
+    color: #707070;
+    opacity: 1;
+    margin-right: 10px;
+   
+  }
+  
+  .textInput {
+    text-align: left;
+    font-weight: 500;
+    font-size: .9em;
+    width: 18.7em;
+  }
+  
+  .helperText {
+    margin-left: 2px;
+    margin-right: 0;
+  }
+  .formGroupRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 1em 0;
+    column-gap: 4.5em;
+    margin-bottom: 2.5em;
+  }
+  .formRow {
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    font-size: 14px;
+    /* width: 100%; */
+    gap: 20px;
+    /* justify-content: space-between; */
+  
+  }
+  .select {
+    color: #707070;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 2px;
+    /* display: inline-block; */
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+    width: 150%;
+
+  }
+  .selectType {
+    color: #707070;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 2px;
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+    margin-right: 10px;
+    width: 135px;
+
+  }
+  .selectStage {
+    color: #707070;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 2px;
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+    width: 60%;
+
+  }
+  .select:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+ 
+  .actionButton {
+    font-size: 0.9em;
+    padding: 0.5em 0.7em;
+    letter-spacing: 1.25px;
+    margin-right: 1em;
+    text-transform: uppercase;
+  }
+  
+  .primaryActionButton {
+    float: right;
+    margin-right: 0;
+    font-size: 0.9em;
+    padding: 0.5em 0.7em;
+  }
+  
+  .primaryActionButton:active {
+    background: #488f71;
+  }
+  
+  .transparentButton {
+    color: #2E75B5;
+    background: transparent;
+    box-shadow: none;
+  }
+  
+  .transparentButton:active {
+    background: transparent;
+  }
+  .smallBtn {
+    height: 1.8em;
+    width: 70px;
+    padding: 7px;
+    font-size: 0.8em;
+    min-width: 5px !important;
+    background: transparent;
+    color: #3A8AFA;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .smallBtn:hover {
+    background: #4e98ff57;
+  }
+  
+  .uploadFileInput {
+    position: absolute;
+    z-index: 1000;
+    opacity: 0;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    height: 100%;
+    font-size: 0;
+    width: 100%;
+    cursor: pointer;
+  }
+  .deleteIcon {
+    color: #146DA2;
+  }
+  .templateBlock{
+    display: flex;
+    flex-grow: 3;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hoverText{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 110%;
+    height: auto;
+    background: #707070;
+    color: #fff;
+    font-size: 0.9em;
+    padding: 0.2em;
+    border-radius: 4px;
+    text-align: left;
+    box-shadow: 0px 4px 5px rgb(0 0 0 / 30%);
+  }
+  .hoverWrapper {
+    position: relative;
+  }

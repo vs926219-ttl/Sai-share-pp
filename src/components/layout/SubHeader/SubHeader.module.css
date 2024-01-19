@@ -1,0 +1,48 @@
+.subHeader {
+  display: flex;
+  flex-direction: row;
+  height: 4em;
+  background-color: rgb(207 214 225);
+  box-shadow: 0px 3px 6px #00000012;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.8em;
+}
+
+.homeIconButton {
+  min-width: 42px;
+  height: 38px;
+  color: #ffff;
+  background: #608fc9 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+}
+.homeIconButton:hover {
+  background-color: #608fc9;
+  opacity: 1;
+}
+
+.homeIcon {
+  font-size: 30px;
+}
+
+.plantDropdown {
+  height: 34px;
+  width: 210px;
+}
+
+.spanClass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.title {
+  padding-left: 0.8em;
+  font-size: 18px;
+  font-weight: bold;
+  color: #4e4e4e;
+}

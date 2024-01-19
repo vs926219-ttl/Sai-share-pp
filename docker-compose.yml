@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  web:
+    build: .
+    container_name: ep-ui-template
+    volumes:
+      - ./dev-EPAppData.js:/var/www/EPAppData.js
+    ports:
+      - '8080:80'

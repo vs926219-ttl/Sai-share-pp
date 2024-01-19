@@ -1,0 +1,90 @@
+.projectName {
+  color: #146da2;
+}
+
+.terminate {
+  color: #f17c7c;
+}
+
+.stagesList {
+  list-style-type: none;
+  padding: 0;
+}
+.stagesList button {
+  display: inline-block;
+  background: #c4c4c4;
+  color: #fff;
+  font-size: 14px;
+  margin: 0 5px 5px 0;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: none;
+  outline:none;
+}
+
+button:disabled {
+  pointer-events: none;
+}
+
+.stagesList button.activeState {
+  background: #f9b233;
+}
+
+.stagesList button.terminateState {
+  background: #f17c7c;
+}
+
+.stagesList button.completeState, .stagesList button.completedState {
+  background: rgb(24, 165, 35);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  background: #fffbe6;
+  padding: 10px 15px;
+}
+.formGroup {
+  flex: 0 0 33.333333%;
+  display: flex;
+  font-size: 14px;
+  margin: 10px 0;
+}
+.formGroup label {
+  color: #707070;
+  font-weight: bold;
+  margin-right: 5px;
+}
+.formGroup p {
+  margin: 0;
+}
+.infoWrapper {
+  color: #707070;
+  height: 100%;
+}
+.infoWrapper h4 {
+  margin-top: 0;
+}
+.blockContainer {
+  padding: 20px 15px 0;
+}
+.stagesWrapper{
+  display: flex;
+  align-items: flex-start;
+}
+.statusWrapper{
+  display: flex;
+  flex-direction: column;
+}
+.ppapStatus{
+  margin: 16px 0;
+  color: #f9b233;
+  font-size: 14px;
+}
+
+@media all and (max-width: 1100px) {
+  .formGroup {
+    flex: 0 0 50%;
+  }
+}

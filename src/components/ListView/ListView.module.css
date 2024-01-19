@@ -1,0 +1,57 @@
+.listView {
+  background: #eaeff7;
+  border: solid 1px #d8d8d8;
+  box-shadow: 1px 1px 5px #00000030;
+  padding: 15px 20px;
+  width: 22vw;
+  border-radius: 16px;
+  height: 71vh;
+  box-sizing: border-box;
+  margin-right: 3%;
+}
+.listTitle {
+  color: #4e4e4e;
+  font-size: 15px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+.listItem {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4e4e4e;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 1px 2px 2px #00000030;
+  padding: 17px 12px;
+  border: none;
+  outline: none;
+  text-align: left;
+  transition: 0.2s;
+}
+.listItem:hover {
+  background: #FFA222;
+  color: #fff;
+}
+
+.selected {
+  background: #FFA222;
+  color: #fff;
+  opacity: 0.6;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.selectedLane {
+  background-color: transparent;
+  box-shadow: none;
+  color: #4e4e4e7a;
+}
+.scrollBar {
+  composes: scrollBar from '../../cssModules/ScrollBar.module.css';
+}
