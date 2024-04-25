@@ -1,0 +1,88 @@
+.container {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding-top: 1em;
+  padding-right: 2em;
+  padding-bottom: 1em;
+  display: flex;
+  background: #F3F5F9;
+}
+
+.processListView {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  height: calc(100% - 7.5em);
+}
+
+.tabsContainer {
+  display: flex;
+  align-items: center;
+  height: 3em;
+  margin-bottom: 0.5em;
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+  height: auto;
+  /* margin: 0.7em 0; */
+  padding: 10px 0 0;
+  box-sizing: border-box;
+}
+
+.actionButton {
+  font-size: 0.7em;
+  padding: 0.5em 0.7em;
+  letter-spacing: 1.25px;
+  margin-right: 1em;
+  text-transform: uppercase;
+}
+
+.saveAsDraftButton {
+  color: #fff;
+  background: #FFA222;
+}
+
+.saveAsDraftButton:hover {
+  background: #e28404;
+}
+
+.gridLoader {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clickable{
+  padding: 0.2em;
+  cursor: pointer;
+  color: #0275a7;
+}
+.clickable:hover {
+  background-color: #c5c3dba4;
+  border-radius: 50%;
+}
+@media screen and (max-width: 1480px) {
+  .container {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 1064px) {
+  .container {
+    font-size: 12px;
+  }
+}

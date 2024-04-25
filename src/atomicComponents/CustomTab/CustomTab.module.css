@@ -1,0 +1,71 @@
+.tabWrapper {
+  height: 100%;
+  width: 100%;
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selected {
+  background: #eff7ff 0% 0% no-repeat padding-box;
+}
+
+.notSelected {
+  background: #ffffff 0% 0% no-repeat padding-box;
+}
+
+.blueCount {
+  font-size: 18px/26px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0em;
+  color: #ffffff;
+  opacity: 1;
+  background: #0275a7 0% 0% no-repeat padding-box;
+  border-radius: 16px;
+  opacity: 1;
+  padding: 0 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.notSelectedCount {
+  font-size: 18px/26px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0em;
+  color: #0275a7;
+  opacity: 1;
+  border-radius: 16px;
+  opacity: 1;
+  padding: 0 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.redCount {
+  font-size: 18px/26px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0em;
+  color: #ffffff;
+  opacity: 1;
+  background: #b24848 0% 0% no-repeat padding-box;
+  border-radius: 16px;
+  opacity: 1;
+  padding: 0 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.title {
+  margin: 0.1em;
+  margin-left: 0.2em;
+  font-size: 16px/23px;
+  font-weight: bold;
+  text-align: left;
+  letter-spacing: 0em;
+  color: #4e4e4e;
+  opacity: 1;
+}

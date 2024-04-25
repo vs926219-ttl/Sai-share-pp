@@ -1,0 +1,110 @@
+.dialogContainer {
+  width: 470px;
+  padding: 50px 40px;
+  margin: 0 auto;
+  border-radius: 0;
+}
+.dialogBox {
+  border-radius: 0;
+  width: 470px !important;
+}
+
+.spinnerBox {
+  border-radius: 0;
+  padding: 1.5em;
+}
+
+.title {
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  display: block;
+  margin: -16px -24px 10px -24px;
+  padding: 12px 0px;
+}
+
+.failure {
+  background: #ff5757;
+}
+
+.success {
+  background: #5db792;
+}
+.information {
+  background: #0275a7;
+}
+.internalError {
+  background: #e28300;
+}
+
+.loading {
+  background: #9b49b4;
+}
+.icfail {
+  color: #fff;
+  width: 24px;
+  padding-top: 2.5px;
+  font-size: 21px;
+  position: absolute;
+  padding-left: 12px;
+  padding-right: 12px;
+  display: inline-block;
+}
+.txt {
+  position: relative;
+  padding-left: 43px;
+  font-weight: 600;
+  display: inline-block;
+}
+.cancelIcon {
+  font-size: 16px !important;
+  color: #fff;
+  cursor: default;
+  top: 16px;
+  right: 15px;
+  position: absolute;
+}
+.cancelIcon:hover {
+  color: rgb(0, 0, 0);
+}
+.content {
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+
+.content.success {
+  width: 250px;
+  height: 100px;
+}
+.errorsContainer {
+  height: auto;
+  font-size: 14px;
+}
+
+.editMessage {
+  font-weight: 300;
+  font-size: 18px;
+  color: #999999;
+  margin: 0px 0px;
+}
+
+.errorList {
+  margin-top: 10;
+  font-size: 14px;
+}
+
+.error {
+  color: #fff;
+  font-size: 16px;
+}
+.errorMessage {
+  padding: 0em 0em;
+  color: #707070;
+  font-size: 18px;
+  font-weight: 600;
+  padding-left: 0;
+}
+
+.noClose {
+  display: none;
+}

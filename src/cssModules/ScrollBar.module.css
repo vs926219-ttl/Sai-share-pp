@@ -1,0 +1,28 @@
+.scrollBar {
+  overflow: auto !important;
+}
+.scrollBar .ReactVirtualized__Grid__innerScrollContainer {
+  width: auto;
+}
+
+.scrollBar::-webkit-scrollbar {
+  width: 9px !important;
+  height: 9px !important;
+}
+
+.scrollBar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 10px #dddddd;
+  border-radius: 1px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-top: 4px solid transparent;
+}
+
+.scrollBar::-webkit-scrollbar-thumb {
+  background: #f17c7c;
+}
+
+.scrollBar::-webkit-scrollbar-thumb:hover {
+  background: #da6363;
+}

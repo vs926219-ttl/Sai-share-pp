@@ -1,0 +1,9 @@
+
+{
+  "realm": "udyog",
+  "auth-server-url": "https://qa.sso.tatamotors.com/auth/",
+  "ssl-required": "external",
+  "resource": "avantgarde-ppap",
+  "public-client": true,
+  "confidential-port": 0
+}
