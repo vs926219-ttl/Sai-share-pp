@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unneeded-ternary */
 import React, { useEffect, useReducer, useState } from 'react'
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import clsx from 'clsx'
 import moment from 'moment'
@@ -13,255 +14,12 @@ import { Button } from '@tmlconnected/avant-garde-components-library';
 import styles from './CreateProjectForm.module.css'
 import { CustomDatePicker, CustomFormGroup, CustomSelect, ValidatingTextField } from '../FormComponents'
 import { API } from '../../apis/api'
-import { buildErrorMessage } from '../../apis/calls'
+import { buildErrorMessage, log } from '../../apis/calls'
 import { API_RESOURCE_URLS, DATE_FORMAT, DISPLAY_MESSAGES, MESSAGE_TYPE, RESOURCE_TYPE, USER_OPERATIONS, EDIT_STATUS } from '../../constants'
 import { AuthChecker } from '../../atomicComponents'
 import { withAllowedOperationsProvider } from '../../hocs'
 import { usePopupManager } from '../../providers/PopupManager/PopupManager';
 
-
-
-
-const jsonData = [
-  {
-    "id": "4ad61bc1-a95e-4372-bcd0-0247ed1bef57",
-    "partNo": "574009130105",
-    "productLine": "MHCV",
-    "location": "JSR",
-    "revision": "A",
-    "sorNo": "SOR_574009130105_A",
-    "projectCode": "M-L154.1-CAD.932-Caltrop Sharabha",
-    "jsrYear1": "1800",
-    "jsrYear2": "1590",
-    "jsrYear3": "1920",
-    "jsrYear4": "2220",
-    "jsrYear5": "2440",
-    "projectName": "Caltrop Sharabha (L154.1)",
-    "commodity": "Body",
-    "aqEngineer": "rkk432084"
-  },
-  {
-    "id": "e1afd977-e7e1-4685-9a88-b697f0723e94",
-    "partNo": "410643700239",
-    "productLine": "MHCV",
-    "location": "JSR",
-    "revision": "NR",
-    "sorNo": "SOR_410643700239_NR",
-    "projectCode": "M-L154.1-CAD.932-Caltrop Sharabha",
-    "jsrYear1": "1800",
-    "jsrYear2": "1590",
-    "jsrYear3": "1920",
-    "jsrYear4": "2220",
-    "jsrYear5": "2440",
-    "projectName": "Caltrop Sharabha (L154.1)",
-    "commodity": "Chassis",
-    "aqEngineer": "bss393138"
-  },
-  {
-    "id": "7226e862-e683-43fe-b41a-29f547e905b9",
-    "partNo": "515631107136",
-    "productLine": "MHCV",
-    "location": "JSR",
-    "revision": "NR",
-    "sorNo": "SOR_515631107136_NR",
-    "projectCode": "M-L159.1-CAF.952-SHURIKEN PHOENIX",
-    "jsrYear1": "1000",
-    "jsrYear2": "1200",
-    "jsrYear3": "1350",
-    "jsrYear4": "1500",
-    "jsrYear5": "1650",
-    "projectName": "SHURIKEN PHOENIX (L159.1)",
-    "commodity": "Body",
-    "aqEngineer": "rrr323300"
-  },
-  {
-    "id": "ae3af076-1e58-4a0a-a471-38e2df296696",
-    "partNo": "513747109901",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "B",
-    "sorNo": "SOR_513747109901_B",
-    "projectCode": "S-L3.7-CDE.774-Intra Bifuel",
-    "pntYear1": "6200",
-    "pntYear2": "7200",
-    "pntYear3": "7500",
-    "pntYear4": "7500",
-    "pntYear5": "7500",
-    "projectName": "Intra Bifuel (L3.7)",
-    "commodity": "Central Powertrain",
-    "aqEngineer": "akk531692"
-  },
-  {
-    "id": "da74669e-54a1-4891-8f96-52df0bbe937c",
-    "partNo": "513747500128",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "B",
-    "sorNo": "SOR_513747500128_B",
-    "projectCode": "S-L11.7-CDE.900-MAGIC BI-FUEL RDE",
-    "pntYear1": "6200",
-    "pntYear2": "7200",
-    "pntYear3": "7500",
-    "pntYear4": "7500",
-    "pntYear5": "7500",
-    "projectName": "MAGIC BI-FUEL RDE (L11.7)",
-    "commodity": "Plastics & Trims",
-    "aqEngineer": "app850791"
-  },
-  {
-    "id": "6be7fb91-3701-4eaf-adc1-bdde4d79b86d",
-    "partNo": "513747500129",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "B",
-    "sorNo": "SOR_513747500129_B",
-    "projectCode": "S-L11.7-CDE.900-MAGIC BI-FUEL RDE",
-    "pntYear1": "6200",
-    "pntYear2": "7200",
-    "pntYear3": "7500",
-    "pntYear4": "7500",
-    "pntYear5": "7500",
-    "projectName": "MAGIC BI-FUEL RDE (L11.7)",
-    "commodity": "Plastics & Trims",
-    "aqEngineer": "app850791"
-  },
-  {
-    "id": "b6b93670-31c6-436e-ab07-c3bf2cf4d0e4",
-    "partNo": "513754600209",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "D",
-    "sorNo": "SOR_513754600209_D",
-    "projectCode": "S-L2.20-CDD.985-ACE DIESEL NA 700CC",
-    "pntYear1": "18489",
-    "pntYear2": "22922",
-    "pntYear3": "20550",
-    "pntYear4": "15561",
-    "pntYear5": "17167",
-    "projectName": "ACE DIESEL NA 700CC (L2.20)",
-    "commodity": "Electrical & Electronics",
-    "aqEngineer": "aaa622411"
-  },
-  {
-    "id": "e8c70372-2664-4756-a47a-74be1a871fc2",
-    "partNo": "554554620162",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "G",
-    "sorNo": "SOR_554554620162_G",
-    "projectCode": "S-L2.23-CDE.891-ACE 900 RDE",
-    "pntYear1": "14000",
-    "pntYear2": "15000",
-    "pntYear3": "13500",
-    "pntYear4": "15000",
-    "pntYear5": "16000",
-    "projectName": "ACE 900 RDE (L2.23)",
-    "commodity": "Electrical & Electronics",
-    "aqEngineer": "aaa622411"
-  },
-  {
-    "id": "1a9b1652-0612-4fce-b02c-04b199fccd9a",
-    "partNo": "554554630134",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "C",
-    "sorNo": "SOR_554554630134_C",
-    "projectCode": "S-L2.23-CDE.891-ACE 900 RDE",
-    "pntYear1": "14000",
-    "pntYear2": "15000",
-    "pntYear3": "13500",
-    "pntYear4": "15000",
-    "pntYear5": "16000",
-    "projectName": "ACE 900 RDE (L2.23)",
-    "commodity": "Electrical & Electronics",
-    "aqEngineer": "aaa622411"
-  },
-  {
-    "id": "198cf996-7429-4eb1-b6a0-ad51d8c7be2f",
-    "partNo": "278915135804",
-    "productLine": "SCV:PSE_CV",
-    "location": "PUN",
-    "revision": "A",
-    "sorNo": "SOR_278915135804_A",
-    "projectCode": "P-L8.2-CHU.903-2.2L DICOR BS6 PH2 ENGINE ON WINGER FWD",
-    "punYear1": "5500",
-    "punYear2": "6500",
-    "punYear3": "7500",
-    "punYear4": "8000",
-    "punYear5": "8000",
-    "projectName": "2.2L DICOR BS6 PH2 ENGINE ON WINGER FWD (L8.2)",
-    "commodity": "Plastics & Trims",
-    "aqEngineer": "nss520948"
-  },
-  {
-    "id": "e712dda4-3d8d-494f-ad31-b4a57dc293fa",
-    "partNo": "513754600215",
-    "productLine": "SCV",
-    "location": "PNT",
-    "revision": "NR",
-    "sorNo": "SOR_513754600215_NR",
-    "projectCode": "S-L2.11-CDE.866-ACE DIESEL BS6 PH-II",
-    "pntYear1": "36977",
-    "pntYear2": "35264",
-    "pntYear3": "31616",
-    "pntYear4": "23940",
-    "pntYear5": "26410",
-    "projectName": "ACE DIESEL BS6 PH-II (L2.11)",
-    "commodity": "Electrical & Electronics",
-    "aqEngineer": "aaa622411"
-  },
-  {
-    "id": "39fb542c-1047-4db8-9df9-799dfd1aef50",
-    "partNo": "252501170393",
-    "productLine": "MHCV:PSE_CV",
-    "location": "JSR",
-    "revision": "NR",
-    "sorNo": "SOR_252501170393_NR",
-    "projectCode": "P-L5.1-5.7TCP2-5.7 SGI TCIC BS6 P2",
-    "jsrYear1": "351",
-    "jsrYear2": "1232",
-    "jsrYear3": "1851",
-    "jsrYear4": "2261",
-    "jsrYear5": "2464",
-    "projectName": "5.7 SGI TCIC BS6 P2 (L5.1)",
-    "commodity": "Chassis",
-    "aqEngineer": "ssr167054"
-  },
-  {
-    "id": "17672a9d-9662-498d-882d-92f10dd127b4",
-    "partNo": "290043900289",
-    "productLine": "ILCV",
-    "location": "PUN",
-    "revision": "A",
-    "sorNo": "SOR_290043900289_A",
-    "projectCode": "I-L25.13-CCD.871-LPT 7T-9T-12T-15T 3.3L -RDE",
-    "punYear1": "60",
-    "punYear2": "70",
-    "punYear3": "75",
-    "punYear4": "75",
-    "punYear5": "80",
-    "projectName": "LPT 7T-9T-12T-15T-18T 3.3L -RDE (L25.13)",
-    "commodity": "Chassis",
-    "aqEngineer": "mcd664365"
-  },
-  {
-    "id": "a37e0485-987e-4aa2-a873-678ce1e4c3e6",
-    "partNo": "570913130168",
-    "productLine": "ILCV",
-    "location": "JSR",
-    "revision": "A",
-    "sorNo": "SOR_570913130168_A",
-    "projectCode": "P-L15.1-CHE.852-5L ENGINES FOR RDE 2023",
-    "jsrYear1": "1650",
-    "jsrYear2": "2080",
-    "jsrYear3": "2460",
-    "jsrYear4": "1390",
-    "jsrYear5": "1560",
-    "projectName": "ILCV RDE AND MODULARITY PROGRAM (L25.1)",
-    "commodity": "Chassis",
-    "aqEngineer": "rss323990"
-  }
-];
 
 const initialState = {
   projectCode: '',
@@ -305,8 +63,20 @@ const reducer = (state, action) => {
 
 function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable }) {
 
+
+  const [partDetail, setPartDetail] = useState([]);
+  const [selectedPartNo, setSelectedPartNo] = useState('');
+  const [plants, setPlants] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [sorNosValue, setSorNosValue] = useState([]);
+  const [selectedPlants, setSelectedPlants] = useState([]);
+  const [byProjectName, setByProjectName] = useState('');
+  const [byProjectCode, setByProjectCode] = useState('');
+  const [byVehicleLine, setByVehicleLine] = useState('');
+  const [sorNumbers, setSorNumbers] = useState([]);
+  const [showSorNumber, setShowSorNumber] = useState(false); 
+
   const [businessUnit, setBusinessUnit] = useState('');
-  const [selectedSOR, setSelectedSOR] = useState('');
 
   const { showPopup } = usePopupManager();
 
@@ -314,7 +84,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
   const { projectCode,
     projectName,
     // businessUnit,
-    plants,
+    // plants,
     vehicleLines,
     projectMilestones,
     vehicleProjections,
@@ -365,7 +135,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
 
   const handleOpen = () => setIsPopupOpen(true);
 
-  const resetFields = () => setResetAllVisitedFields(true);
+  // const resetFields = () => setResetAllVisitedFields(true);
 
   const loadData = async (setState, url, params) => {
     try {
@@ -378,8 +148,153 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
     }
   };
 
+
   const loadBusinessUnits = async () =>
     loadData(setAvailableBusinessUnits, API_RESOURCE_URLS.getAllBusinessUnits());
+
+  async function getPartNumber() {
+    const res = await API.get(API_RESOURCE_URLS.getAllBusinessUnits());
+    return res.data;
+  }
+  
+
+
+
+    async function fetchPartDetail() { 
+      try {
+        const data = await getPartNumber();
+        setPartDetail(data);
+      } catch (error) {
+        console.error('Error fetching part details:', error);
+      }
+    }
+    useEffect(()=>{
+      fetchPartDetail();
+
+    })
+async function getPlantsDetailByPart(partNo) {
+  try {
+      const res = await API.get(`http://localhost:3000/ppap/projects/getPlants/${partNo}`);
+      return res.data; // Return plant data
+  } catch (error) {
+      console.error("Error:", error);
+      return []; // Return empty array in case of error
+  }
+}
+useEffect(() => {
+  async function fetchPlants() {
+      try {
+          if (selectedPartNo) {
+              const plantsData = await getPlantsDetailByPart(selectedPartNo);
+              const locations = plantsData.map(plant => plant.location);
+              console.log("Locations:", locations);
+              if (locations.length > 0) {
+                setSelectedLocation(locations[0]);
+              }
+              setPlants(plantsData); // Set plants data
+          }
+      } catch (error) {
+          console.error('Error fetching plants:', error);
+      }
+  }
+
+  fetchPlants();
+}, [selectedPartNo]);
+
+
+  useEffect(() => {
+    async function fetchPlants() {
+      try {
+        if (selectedPartNo) {
+          const plantsData = await getPlantsDetailByPart(selectedPartNo);
+          setPlants(plantsData);
+        }
+      } catch (error) {
+        console.error('Error fetching plants:', error);
+      }
+    }
+
+    fetchPlants();
+  }, [selectedPartNo]);
+
+  async function getSorNumberByPartAndLocation(partNo, location) {
+   
+    try {
+      const res = await API.get(`http://localhost:3000/ppap/projects/getSorNo/${partNo}/${location}`);
+      return res.data;
+      
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  }
+  useEffect(() => {
+    async function fetchSorNumber() {
+      try {
+        if (selectedPartNo && selectedLocation) {
+          const sorNumbersData = await getSorNumberByPartAndLocation(selectedPartNo, selectedLocation);
+          // console.log("new Comment", sorNumbersData);
+          setSorNumbers(sorNumbersData);
+          const sorNos = sorNumbersData.map(sor => sor.sorNo);
+          setSorNosValue(sorNos); 
+          const ProjectNameData = sorNumbersData.map(name => name.projectName);
+          const ProjectCodeData = sorNumbersData.map(name => name.projectCode);
+          const vehicleLineData = sorNumbersData.map(name => name.productLine);
+          console.log("Sor Numbers1:", vehicleLineData); // Log SOR numbers to console
+          if (ProjectNameData.length > 0) {
+            setByProjectName(ProjectNameData[0]);
+          }
+          if (ProjectCodeData.length > 0) {
+            setByProjectCode(ProjectCodeData[0]);
+          }
+          if (vehicleLineData.length > 0) {
+            setByVehicleLine(vehicleLineData[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching SOR numbers:', error);
+      }
+    }
+  
+    fetchSorNumber();
+  }, [selectedPartNo, selectedLocation]);
+
+  // Function to extract values for each location
+  const extractValuesByLocation = (location) => {
+    const values = {
+      year1: sorNumbers.map((item) => item[`${location}Year1`] || 0),
+      year2: sorNumbers.map((item) => item[`${location}Year2`] || 0),
+      year3: sorNumbers.map((item) => item[`${location}Year3`] || 0),
+      year4: sorNumbers.map((item) => item[`${location}Year4`] || 0),
+      year5: sorNumbers.map((item) => item[`${location}Year5`] || 0),
+    };
+     // If location is not the current one, set all other years to 0
+  if (location !== 'pun') {
+    ['year1', 'year2', 'year3', 'year4', 'year5'].forEach((year) => {
+      if (!values[year]) {
+        values[year] = Array(sorNumbers.length).fill(0);
+      }
+    });
+  }
+    return values;
+  };
+
+  
+
+  const resetFields = () => {
+    // Reset all state variables holding selected values to their initial states
+    setSelectedPartNo('');
+    setSelectedLocation('');
+    // setSorNosValue([]);
+    setSelectedPlants([]);
+    setByProjectName('');
+    setByProjectCode('');
+    setByVehicleLine('');
+    setSorNumbers([]);
+    // resetProjectMilestones();
+    // Reset any other relevant state variables
+  };
+
 
   const loadPlants = async (businessUnitName) =>
     loadData(
@@ -400,16 +315,11 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
   const formatOptionsForPlantsSelect = (...options) =>
     options.map(({ value, label }) => ({ value, label }));
 
-  const getBusinessUnitOptions = () =>
-    formatOptionsForSelect(...availableBusinessUnits.data.map(({ name }) => name));
+  // const getBusinessUnitOptions = () =>
+  //   formatOptionsForSelect(...availableBusinessUnits.data.map(({ name }) => name));
 
-  // const getPartNumbers = () =>  formatOptionsForSelect(...jsonData.map(item => item.partNo));
-  const getPartNumbers = () =>
-  jsonData.map((item) => ({
-    value: item.partNo,
-    label: item.partNo,
-    sorNo: item.sorNo // Include corresponding SOR number
-  }));
+  const getBusinessUnitOptions = () =>
+  formatOptionsForSelect(...availableBusinessUnits.data);
 
   const getPlantsOptions = () =>
     formatOptionsForPlantsSelect(...availablePlants.data.map(({ name, code }) => ({
@@ -512,7 +422,6 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
     code: projectCode,
     name: projectName,
     businessUnit: businessUnit && businessUnit.value,
-    plantCodes: plants && plants.map(({ value }) => value),
     vehicleLines: vehicleLines && vehicleLines.map(({ value }) => value),
     projectMilestoneTimelines: getProjectMilestones(),
     vehicleProjections: getVehicleProjections(),
@@ -677,16 +586,22 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
       });
     }
   }
-
- 
-
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   const resetState = () => {
-    dispatch({ type: 'reset' })
+    dispatch({ type: 'reset' });
     setHighlightMandatoryFields(null);
-    setAvailablePlants({ loading: false, data: [] })
+    setSaveAsDraftHighlightMandatoryFields(false);
+    setAvailablePlants({ loading: false, data: [] });
     changeBackgroundColor('projectInfoBg');
     setResetAllVisitedFields(false);
+    setSelectedPartNo('');
+    setSelectedLocation('');
+    setSorNumbers([]);
+    setSorNosValue([]);
+    setByProjectName('');
+    setByProjectCode('');
+    setByVehicleLine('');
+  
   }
 
   useEffect(() => {
@@ -724,7 +639,6 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
     if(projectId)
       getProjectDetails();
   },[projectId])
-  
 
   const renderProjectInfoElements = () => (
     <div
@@ -737,62 +651,73 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
           <label className={styles.label}>
             Part #
           </label>
-          <CustomSelect
-            name="business-unit"
-            isMandatory
-            markIfUnselected={highlightMandatoryFields}
-            // options={getBusinessUnitOptions()}
-            options={getPartNumbers()}
-            className={clsx(styles.select, styles.sel1)}
-            value={businessUnit}
-            resetAllVisitedFields={resetAllVisitedFields}
-            onChange={(selection) => {
-              if (selection) {
-                setBusinessUnit(selection.value); 
-                setSelectedSOR(selection.sorNo);
-                loadPlants(selection.value);
-                dispatch({ type: 'update', field: 'businessUnit', value: selection.value })
-                dispatch({ type: 'update', field: 'plants', value: null })
-              }
-            }}
-            isDisabled={isEditable? false:true}
-          />
+            <select
+        name="partNo"
+        id="partNoField"
+        value={selectedPartNo}
+        onChange={(e) => {
+          setSelectedPartNo(e.target.value)
+        }}
+        className={clsx(styles.select, styles.sel1, 'customField')}
+        style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 10px", borderRadius: '4px'}}
+      >
+        <option value="">Select...</option>
+        {partDetail.map((partNo) => (
+          <option key={partNo} value={partNo}>
+            {partNo}
+          </option>
+        ))}
+      </select>
+      {/* <CustomSelect
+  name="partNo"
+  value={selectedPartNo}
+  onChange={(selectedOption) => setSelectedPartNo(selectedOption)}
+  options={partDetail.map(partNo => ({ value: partNo, label: partNo }))}
+  className={clsx(styles.select, styles.sel1, 'customField')}
+  style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 10px", borderRadius: '4px'}}
+  isMandatory// or false
+  markIfUnselected={highlightMandatoryFields}
+  resetAllVisitedFields={resetAllVisitedFields}
+  isMulti
+  isClearable
+  isDisabled={isEditable ? false : true}
+/> */}
         </div>
         <div className={styles.formRow}>
           <label className={styles.label}>
             Plants*
           </label>
-          <CustomSelect
-            name="plants"
-            isMandatory
-            markIfUnselected={highlightMandatoryFields}
-            options={getPlantsOptions()}
-            className={clsx(styles.select, styles.sel1, styles.sel2)}
-            value={plants}
-            resetAllVisitedFields={resetAllVisitedFields}
-            isMulti
-            isClearable
-            onChange={(selection) => dispatch({ type: 'update', field: 'plants', value: selection })}
-            isDisabled={isEditable? false:true}
-          />
+         <CustomSelect
+    name="plants"
+    isMandatory
+    markIfUnselected={highlightMandatoryFields}
+    options={plants.map(plant => ({ value: plant.name, label: plant.name }))}
+    className={clsx(styles.select, styles.sel1, styles.sel2)}
+    value={selectedPlants}
+    resetAllVisitedFields={resetAllVisitedFields}
+    // isMulti
+    isClearable
+    onChange={(selection) => {
+      setSelectedPlants(selection);
+      dispatch({ type: 'update', field: 'plants', value: selection })
+  }}
+    isDisabled={!isEditable}
+/>
+        
         </div>
         <div className={styles.formRow}>
           <label className={styles.label}>
             SOR #
           </label>
           <CustomSelect
-            name="vehicle-line"
+            name="sorNumbers"
             isMandatory
             markIfUnselected={highlightMandatoryFields}
-            // options={getVehicleLinesOptions()}
-            options={formatOptionsForSelect(selectedSOR)}
+            options={sorNosValue.map(sorNo => ({ value: sorNo, label: sorNo }))}
             className={clsx(styles.select, styles.sel1)}
-            // value={vehicleLines}
-            value={selectedSOR}
             resetAllVisitedFields={resetAllVisitedFields}
             // isMulti
-            // isClearable
-            onChange={(selection) => dispatch({ type: 'update', field: 'vehicleLines', value: selection })}
+            isClearable
             isDisabled={isEditable? false:true}
           />
         </div>
@@ -811,7 +736,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             validationHelperText="error occured"
             variant="outlined"
             size="small"
-            value={projectCode}
+            value={byProjectCode}
             resetAllVisitedFields={resetAllVisitedFields}
             onChange={(e) => dispatch({ type: 'update', field: 'projectCode', value: e.target.value })}
             placeholder="Enter Project Code"
@@ -837,9 +762,10 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             validationHelperText="error occured"
             variant="outlined"
             size="small"
-            value={projectName}
+            value={byProjectName}
             resetAllVisitedFields={resetAllVisitedFields}
-            onChange={(e) => dispatch({ type: 'update', field: 'projectName', value: e.target.value })}
+            // onChange={(e) => dispatch({ type: 'update', field: 'projectName', value: e.target.value })}
+           onChange={(e) => setByProjectName(e.target.value)}
             placeholder="Enter Project Name"
             className={styles.textField}
             inputProps={{
@@ -855,7 +781,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
           <label className={styles.label}>
             Business Unit*
           </label>
-          <CustomSelect
+          {/* <CustomSelect
             name="business-unit"
             isMandatory
             markIfUnselected={highlightMandatoryFields}
@@ -871,7 +797,13 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               }
             }}
             isDisabled={isEditable? false:true}
-          />
+          /> */}
+          
+         <input type="text" value="CVBU" readOnly
+          className={clsx(styles.select, styles.sel1, 'customField')}
+          style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 0px", borderRadius: '4px'}}
+         
+         />
         </div>
       </div>
       <div className={clsx(styles.formGroupRow, styles.projectInfoFormGroupRow)}>
@@ -879,7 +811,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
           <label className={styles.label}>
             Vehicle Line*
           </label>
-          <CustomSelect
+          {/* <CustomSelect
             name="vehicle-line"
             isMandatory
             markIfUnselected={highlightMandatoryFields}
@@ -891,7 +823,11 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             isClearable
             onChange={(selection) => dispatch({ type: 'update', field: 'vehicleLines', value: selection })}
             isDisabled={isEditable? false:true}
-          />
+          /> */}
+            <input type="text" 
+             className={clsx(styles.select, styles.sel1, 'customField')}
+             style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 10px", borderRadius: '4px'}}
+            value={byVehicleLine} onChange={(e) => setByVehicleLine(e.target.value)} />
         </div>
         <div className={styles.formRow}>
           <label className={styles.label}>
@@ -979,14 +915,15 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
     <div
       className={styles.formGroup}
       style={{
-        // paddingRight: '50%',
-        backgroundColor: vehicleProjectionBg ? BG_COLOR : null
+        paddingRight: '50%',
+        backgroundColor: vehicleProjectionBg ? BG_COLOR : null,
+        overflowX: 'auto',
       }}
-      onClick={() => changeBackgroundColor('vehicleProjectionBg')}
+      // onClick={() => changeBackgroundColor('vehicleProjectionBg')}
     >
-      <div className={clsx(styles.formGroupRow, styles.projectMilestoneformGroupRow)}>
+     
+      {/* <div className={clsx(styles.formGroupRow, styles.projectMilestoneformGroupRow)}>
         <h6 className={styles.projectMilestoneHeaderTitle}>SN</h6>
-        {/* <h6 className={styles.projectMilestoneHeaderTitle}>Year</h6> */}
         <h6 className={styles.projectMilestoneHeaderTitle}>Pune CVBU</h6>
         <h6 className={styles.projectMilestoneHeaderTitle}>Pune PVBU</h6>
         <h6 className={styles.projectMilestoneHeaderTitle}>Jamshedpur</h6>
@@ -996,21 +933,36 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
         <h6 className={styles.projectMilestoneHeaderTitle}>Dharwad</h6>
         <h6 className={styles.projectMilestoneHeaderTitle}>Grand Total</h6>
       </div>
+    
       {vehicleProjections.map(({ sn, count, year }, index, projections) => (
         <div key={sn} className={clsx(styles.formGroupRow, styles.projectMilestoneformGroupRow)}>
           <label className={styles.label}>{sn}*</label>
-          {/* <CustomSelect
-            name={`vehicle-projection-select-${index + 1}`}
-            isMandatory
-            markIfUnselected={highlightMandatoryFields}
-            options={getYearOptions(index, projections)}
-            className={styles.select}
-            value={year}
-            resetAllVisitedFields={resetAllVisitedFields}
-            onChange={(selection) => updateVehicleProjection(count, selection, index, 'year')}
+          {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Pune CVBU"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
           /> */}
-          <ValidatingTextField
+           {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1026,7 +978,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Pune PVBU"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1034,8 +986,8 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-           <ValidatingTextField
+          /> */}
+           {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1051,7 +1003,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Jamshedpur"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1059,8 +1011,8 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-           <ValidatingTextField
+          /> */}
+           {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1076,7 +1028,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Lucknow"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1084,8 +1036,8 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-           <ValidatingTextField
+          /> */}
+           {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1101,7 +1053,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Pantnagar"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1109,8 +1061,8 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-           <ValidatingTextField
+          /> */}
+           {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1126,7 +1078,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Sanand"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1134,8 +1086,8 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-           <ValidatingTextField
+          /> */}
+           {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1151,7 +1103,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Dharwad"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1159,8 +1111,8 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-           <ValidatingTextField
+          /> */}
+             {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -1176,7 +1128,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Grand Total"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -1184,35 +1136,53 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-             <ValidatingTextField
-            isDisabled={isEditable? false:true}
-            isMandatory
-            validationFn={(value) => value > 0}
-            variant="outlined"
-            size="small"
-            type="number"
-            markIfEmpty={highlightMandatoryFields}
-            value={count}
-            resetAllVisitedFields={resetAllVisitedFields}
-            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
-            onKeyPress={(e) => {
-              if (e?.key === '-' || e?.key === '+') {
-                e?.preventDefault();
-              }
-            }}
-            placeholder="Enter Quantity"
-            className={styles.textField}
-            inputProps={{
-              className: styles.textInput,
-              step: 1,
-              min: 0,
-              "data-testid": `vehicle-projection-input-${index + 1}`,
-            }}
-          />
-        </div>
-      ))}
-    </div>
+          /> */}
+         {/* </div> */}
+      {/* // ))} */}
+      <div className={styles.tableContainer}>
+    <table className={`${styles.customTable} my-custom-class`}>
+      <thead>
+        <tr className='my-table-row'>
+          <th className={styles.smallFont}>SN</th>
+          <th className={styles.smallFont}>Pune CVBU</th>
+          <th className={styles.smallFont}>Pune PVBU</th>
+          <th className={styles.smallFont}>Jamshedpur</th>
+          <th className={styles.smallFont}>Lucknow</th>
+          <th className={styles.smallFont}>Pantnagar</th>
+          <th className={styles.smallFont}>Sanand</th>
+          <th className={styles.smallFont}>Dharwad</th>
+          <th className={styles.smallFont}>Grand Total</th>
+        </tr>
+      </thead>
+      <tbody>
+      {[1, 2, 3, 4, 5].map((yearIndex) => (
+      <tr key={yearIndex} className={styles.customTableRow}>
+    <td>Year {yearIndex}</td>
+    <td key={`pun-year-${yearIndex}`}>{extractValuesByLocation('pun')[`year${yearIndex}`]}</td>
+    <td key={`pun-year-${yearIndex}`}>{extractValuesByLocation('pun')[`year${yearIndex}`]}</td>
+    <td key={`jsr-year-${yearIndex}`}>{extractValuesByLocation('jsr')[`year${yearIndex}`]}</td>
+    <td key={`lkw-year-${yearIndex}`}>{extractValuesByLocation('lkw')[`year${yearIndex}`]}</td>
+    <td key={`pnt-year-${yearIndex}`}>{extractValuesByLocation('pnt')[`year${yearIndex}`]}</td>
+    <td key={`san-year-${yearIndex}`}>{extractValuesByLocation('san')[`year${yearIndex}`]}</td>
+    <td key={`dhw-year-${yearIndex}`}>{extractValuesByLocation('dhw')[`year${yearIndex}`]}</td>
+    <td>
+      {extractValuesByLocation('pun')[`year${yearIndex}`] +
+        extractValuesByLocation('pun')[`year${yearIndex}`] +
+        extractValuesByLocation('jsr')[`year${yearIndex}`] +
+        extractValuesByLocation('lkw')[`year${yearIndex}`] +
+        extractValuesByLocation('pnt')[`year${yearIndex}`] +
+        extractValuesByLocation('san')[`year${yearIndex}`] +
+        extractValuesByLocation('dhw')[`year${yearIndex}`]}
+    </td>
+  </tr>
+))}
+
+
+      </tbody>
+    </table>
+</div>
+    </div> 
+    
   )
 
   const renderRemarkElement = () => (
@@ -1255,7 +1225,10 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
         <Button
           className={clsx(styles.actionButton, styles.resetButton)}
           variant="tertiary"
-          onClick={handleOpen}
+          onClick={() => {
+            handleOpen(); // Open reset confirmation modal if needed
+            resetFields(); // Reset selected fields
+          }}
         >
           RESET
         </Button>
