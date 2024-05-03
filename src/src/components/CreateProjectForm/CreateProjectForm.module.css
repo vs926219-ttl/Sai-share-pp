@@ -1,0 +1,214 @@
+.container {
+  height: 100%;
+  margin-top: 0.8em;
+  display: flex;
+  flex-direction: column;
+}
+
+.formContainer {
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000027;
+  opacity: 1;
+  padding: 1.5em 0.5em 0 0.5em;
+  border-radius: 4px;
+  margin-top: 0.8em;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.formGroup {
+  padding: 1.5em;
+}
+
+.formGroupRow {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  margin: 1em 0;
+  column-gap: 1em;
+}
+
+.projectInfoFormGroupRow {
+  grid-template-columns: repeat(3, 30%);
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  width: 100%;
+  gap: 0.5em;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 1em;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  width: 100px;
+}
+
+.textField {
+  color: #707070;
+}
+
+.textInput {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.9em;
+  border-color: #E9DEAE;
+}
+
+.projectInfoTextInput {
+  width: 218px;
+}
+
+.helperText {
+  margin-left: 2px;
+  margin-right: 0;
+}
+
+.select {
+  color: #707070;
+  font-weight: 500;
+  font-size: 1em;
+  border-radius: 2px;
+  display: inline-block;
+  border: none;
+  outline: none !important;
+  box-shadow: none !important;
+  width: 130px;
+}
+.select:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.sel1 {
+  width: 240px;
+}
+.sel2 {
+  height: 100%;
+}
+
+.dateInput {
+  width: 115px;
+  box-sizing: border-box;
+  outline: none;
+  border: 0;
+  font-size: 0.9em;
+}
+
+.projectMilestoneHeaderTitle {
+  text-align: center;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  font-size: 0.8em;
+  margin: 0;
+}
+
+.projectMilestoneformGroupRow {
+  margin: 0.7em;
+  align-items: center;
+}
+
+.actionBar {
+  flex-grow: 0;
+  height: auto;
+  margin: 0.7em 0;
+  width: 100%;
+  padding: 3.8px 0;
+  box-sizing: border-box;
+}
+
+.actionButton {
+  font-size: 0.7em;
+  padding: 0.5em 0.7em;
+  letter-spacing: 1.25px;
+  margin-right: 1em;
+  text-transform: uppercase;
+}
+
+.saveAsDraftButton {
+  color: #fff;
+  background: #FFA222;
+}
+
+.saveAsDraftButton:hover {
+  background: #e28404;
+}
+
+.saveAsDraftButton:disabled,
+.saveAsDraftButton[disabled]{
+  box-shadow: none;
+  color: rgba(0, 0, 0, 0.26);
+  background: #d8d8d8;
+}
+
+.resetButton {
+  color: #fff;
+  background: #C96B6B;
+}
+
+.resetButton:hover {
+  background: #b45a5a;
+}
+
+.primaryActionButton {
+  float: right;
+  margin-right: 0;
+  font-size: 0.7em;
+  padding: 0.5em 0.7em;
+}
+
+.primaryActionButton:active {
+  background: #488f71;
+}
+
+.transparentButton {
+  color: #2E75B5;
+  background: transparent;
+  box-shadow: none;
+}
+
+.transparentButton:active {
+  background: transparent;
+}
+
+.popContainer {
+  width: 470px;
+  padding: 50px 40px;
+  margin: 0 auto;
+  border-radius: 0;
+}
+.popupBox {
+  border-radius: 0;
+  width: 470px !important;
+}
+
+.title {
+  color: #fff;
+  font-weight: 500;
+  font-size: 18px;
+  display: block;
+  margin: -16px -24px 10px -24px;
+  padding: 12px;
+  background: #F17C7C;
+  display: flex;
+  align-items: center;
+}
+
+.txt {
+  padding-left: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.content {
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+
+

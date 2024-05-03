@@ -1,0 +1,95 @@
+.title {
+	background: #F17C7C;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 11px 0px;
+    line-height: 3px;
+    color: #fff;
+    margin: -24px -17px 3px -3px;
+    display: block;
+    letter-spacing: 1px;
+}
+.txt {
+	display: inline-block;
+    position: absolute;
+    padding: 12px 0px;
+}
+.container {
+	width: 487px;
+    border: solid 1px #70707060;
+    border-radius: 5px;
+    height: 177px;
+    font-family: sans-serif;
+    display: block;
+    background-color: white;
+    margin: 29vh auto;
+    outline: none;
+    padding: 15px;
+    padding-left: 2px;
+    box-sizing: border-box;
+}
+.cancelBt {
+	flex: 4 1;
+    color: #2e75b5;
+    background: #fff;
+    width: 95px;
+    height: 30px;
+    font-size: 14px;
+    letter-spacing: 1.25px;
+    text-align: center;
+    line-height: 28px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+.cancelBt:hover {
+	background: rgb(215, 215, 231);
+}
+.submitBt {
+	flex: 1 1;
+    background: #82c1a7;
+    width: 76px;
+    height: 30px;
+    font-size: 14px;
+    letter-spacing: 1.25px;
+    color: #ffffff;
+    text-align: center;
+    line-height: 24px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    font-weight: 600;
+}
+.submitBt:hover {
+	background: #44886c;
+}
+.bottomRow {
+    margin-top: 10px;
+    width: 100%;
+    display: inline-block;
+    padding-right: 0.1em;
+    padding-left: 287px;
+    box-sizing: border-box;
+	/* / because i gave slightly more padding to the left of the container, am reducing padding to the left / */
+	/* padding-left: 287px;
+	box-sizing: border-box; */
+}
+.warningText {
+	font-weight: 200;
+    color: #707070;
+    text-align: left;
+    font-size: 18px;
+    padding-top: 14px;
+    padding-left: 21px;
+    padding-right: 21px;
+    letter-spacing: 0px;
+    opacity: 1;
+}
+.block {
+	padding-left: 10px;
+	padding-right: 25px;
+    font-size: 1.3rem;
+}

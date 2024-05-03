@@ -1,0 +1,35 @@
+.searchBarContainer {
+  padding: 0.5em 0.5em;
+  border-radius: 5px;
+  border: 1px solid #cdd4e0;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+}
+
+.icon {
+  flex-grow: 0;
+  color: #0388c2;
+  font-size: 1.2em;
+}
+
+.clickable:hover {
+  color: #037aad;
+  background-color: #e9e3e3a4;
+  border-radius: 50%;
+}
+
+.clickable:active {
+  color: #02618a;
+}
+
+.clickable {
+  cursor: pointer;
+}

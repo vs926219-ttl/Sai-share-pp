@@ -1,0 +1,33 @@
+.tableRow {
+  box-sizing: border-box;
+  white-space: nowrap;
+  width: auto !important;
+  color: #707070;
+  font-size: 14px;
+  min-width: 100%;
+}
+
+.tableRow:hover {
+  background-color: #fffbe4;
+  cursor: pointer;
+}
+
+.defaultSelectedRow {
+  background-color: #fffbe4;
+}
+
+.ellipsisText {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tableCell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 11px;
+  box-sizing: border-box;
+  font-size: 0.9em;
+}

@@ -1,0 +1,13 @@
+.child {
+    background-color: #F3F5F9;
+}
+
+.childPosition {
+    position: fixed;
+    top: 12em;
+    left: 8.5em;
+}
+
+.childItem {
+    font-size: 12px;
+}

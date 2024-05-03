@@ -1,0 +1,273 @@
+.infoWrapper{
+  color:#707070;
+  height: 100%;
+}
+
+.infoWrapper h4{
+  margin: 0;
+  padding: 1em;
+}
+
+.projectName {
+  color: #146DA2
+}
+
+.terminate {
+  color: #F17C7C
+}
+
+.header {
+  padding: 0.5em 1em;
+  background: #F0F0F0 0% 0% no-repeat padding-box;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .stage {
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  font-size: 1em;
+  font-weight: 500;
+}
+
+.content {
+  padding: 1em;
+  background: #FFFBE6;
+}
+
+.serialNumber {
+  min-width: 2px;
+  width: 1em;
+}
+
+.documentsContainer {
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+}
+
+.documentsContainer tr:first-child td:first-child {
+  border-top-left-radius: 4px;
+}
+
+.documentsContainer tr:last-child td:first-child {
+  border-bottom-left-radius: 4px;
+}
+
+.documentsContainer tr:first-child td:last-child {
+  border-top-right-radius: 4px;
+}
+
+.documentsContainer tr:last-child td:last-child {
+  border-bottom-right-radius: 4px;
+}
+
+.button {
+  font-size: 0.7em;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #2E75B5;
+  background: transparent;
+  box-shadow: none;
+  height: 2em;
+  min-width: 4em;
+  width: 4.5em;
+  padding: 0;
+}
+
+.documentName {
+  min-width: 100px;
+  width: 20em;
+}
+
+.select {
+  color: #707070;
+  font-weight: 500;
+  font-size: 1em;
+  border-radius: 2px;
+  display: inline-block;
+  border: none;
+  outline: none !important;
+  box-shadow: none !important;
+  width: 130px;
+}
+.select:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.sel1 {
+  width: 193px;
+}
+
+.dateInput {
+  box-sizing: border-box;
+  outline: none;
+  border: 0;
+  font-size: 0.9em;
+}
+
+.disabledDateInput {
+  background: #e7e7e7;
+  color:#b2b2b2;
+}
+
+.remarks {
+  border: none;
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  width: 50%;
+  gap: 0.5em;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 1em;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+
+.textInput {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.9em;
+  border-color: #E9DEAE;
+}
+.addBtn {
+  font-weight: 500;
+  color: #3A8AFA;
+  font-size: 0.8em;
+  margin: 0 10px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.submitBtn {
+  font-weight: 500;
+  color: #3A8AFA;
+  font-size: 0.8em;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.terminateButton {
+  color: #fff;
+  background: #C96B6B;
+}
+
+.terminateButton:hover {
+  background: #b45a5a;
+}
+
+.transparentButton {
+  color: #2E75B5;
+  background: transparent;
+  box-shadow: none;
+}
+
+.transparentButton:active {
+  background: transparent;
+}
+
+.saveAsDraftButton {
+  color: #fff;
+  background: #FFA222;
+}
+
+.saveAsDraftButton:hover {
+  background: #e28404;
+}
+
+.reviseButton {
+  color: #fff;
+  background: #F17C7C;
+}
+
+.reviseButton:hover {
+  color: #fff;
+  background: #f85c5c;
+}
+
+.popContainer {
+  width: 470px;
+  padding: 50px 40px;
+  margin: 0 auto;
+  border-radius: 0;
+}
+.popupBox {
+  border-radius: 0;
+  width: 470px !important;
+}
+
+.title {
+  color: #fff;
+  font-weight: 500;
+  font-size: 18px;
+  display: block;
+  margin: -16px -24px 10px -24px;
+  padding: 12px;
+  background: #F17C7C;
+  display: flex;
+  align-items: center;
+}
+
+.txt {
+  padding-left: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.popupContent {
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+.gridLoader {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+}
+.deleteIcon {
+  color: #146DA2;
+  padding: 5px;
+}
+
+.targetdate{
+  text-align: right;
+  font-size: 1em;
+  font-weight: 500;
+  color: #707070;
+  opacity: 1;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.uploadFileInput {
+  position: absolute;
+  z-index: 1000;
+  opacity: 0;
+  cursor: pointer;
+  right: 0;
+  top: 0;
+  height: 100%;
+  font-size: 0;
+  width: 100%;
+  cursor: pointer;
+}

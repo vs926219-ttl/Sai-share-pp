@@ -1,0 +1,159 @@
+.infoWrapper{
+  color:#707070;
+  height: 100%;
+}
+
+.infoWrapper h4{
+  margin: 0;
+  padding: 1em;
+}
+
+.projectName {
+  color: #146DA2
+}
+
+.terminate {
+  color: #F17C7C
+}
+
+.select {
+  color: #707070;
+  font-weight: 500;
+  font-size: 1em;
+  border-radius: 2px;
+  display: inline-block;
+  border: none;
+  outline: none !important;
+  box-shadow: none !important;
+  width: 130px;
+}
+.select:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.sel1 {
+  width: 193px;
+}
+
+.dateInput {
+  box-sizing: border-box;
+  outline: none;
+  border: 0;
+  font-size: 0.9em;
+}
+
+.disabledDateInput {
+  background: #e7e7e7;
+  color:#b2b2b2;
+}
+
+.uploadExcelInput {
+  position: absolute;
+  z-index: 1000;
+  opacity: 0;
+  cursor: pointer;
+  right: 0;
+  top: 0;
+  height: 100%;
+  font-size: 24px;
+  width: 100%;
+}
+
+.saveAsDraftButton {
+  color: #fff;
+  background: #FFA222;
+}
+
+.saveAsDraftButton:hover {
+  background: #e28404;
+}
+
+.reviseButton {
+  color: #fff;
+  background: #C96B6B;
+}
+
+.reviseButton:hover {
+  background: #b45a5a;
+}
+
+.yellowBg{
+  background: #FFFBE6;
+}
+
+.addDetailsBtn {
+  height: 1.8em;
+  width: 60px;
+  padding: 7px;
+  font-size: 0.8em;
+  min-width: 5px !important;
+  background: transparent;
+  color: #3A8AFA;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.addDetailsBtn:hover {
+  background: #4e98ff57;
+}
+
+.popupBox {
+  width: 600px;
+  height: 220px;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 18px;
+  display: block;
+  margin: -16px -24px 10px -24px;
+  padding: 12px;
+  background: #d8e6f5;
+  display: flex;
+  align-items: center;
+}
+
+.txt {
+  padding-left: 12px;
+  font-weight: 600;
+  display: inline-block;
+  color: #146DA2
+}
+
+.popupContent {
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+
+.popupContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 1em;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  margin-right: 0.5em;
+}
+
+.textField {
+  color: #707070;
+}
+
+.textInput {
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.9em;
+  border-color: #E9DEAE;
+}
+
+.deleteIcon {
+  color: #146DA2;
+}

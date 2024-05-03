@@ -1,0 +1,12 @@
+.body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.renderArea {
+  flex-grow: 1;
+  width: 100vw;
+  overflow: auto;
+}

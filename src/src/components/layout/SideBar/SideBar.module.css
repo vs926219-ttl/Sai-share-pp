@@ -1,0 +1,30 @@
+.root {
+  width: 100%;
+  height: 100%;
+}
+.icon {
+  height: 24px;
+  width: 24px;
+}
+.isOpen {
+  color: #ffa222;
+}
+.notificationAlertIcon {
+  color: #000;
+  position: absolute;
+  left: 30px;
+  top: 18px;
+  width: 17px;
+  height: 17px;
+  background-color: #f8d900;
+  border-radius: 100px;
+}
+.line {
+  width: 1px;
+  height: 100%;
+  background: #e8eff7;
+  position: fixed;
+  right: 64px;
+  top: 0;
+  z-index: 0;
+}

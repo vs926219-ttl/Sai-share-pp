@@ -1,0 +1,41 @@
+.headerWithMenu {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.headerWithMenu.ellipsisText {
+  flex-grow: 1;
+}
+
+.filterIcon {
+  flex-grow: 0;
+  color: #E9DEAE;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-left: 1em;
+}
+
+.filterIcon:hover {
+  color: #fff;
+  background-color: #E9DEAE;
+  border-radius: 5px;
+}
+
+.filterIcon:active {
+  color: #fff;
+  background-color: #E9DEAE;
+  border-radius: 5px;
+}
+
+.openFilterIcon {
+  color: #fff;
+  background-color: #E9DEAE;
+  border-radius: 5px;
+}
+
+.ellipsisText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
