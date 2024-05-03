@@ -5,7 +5,8 @@
 import '@testing-library/jest-dom';
 
 global.epAppData = {
-  API_BASE_URL: 'https://fake.api.domain',
+  // API_BASE_URL: 'https://fake.api.domain',
+  API_BASE_URL: 'https://ppap.esakha-dev.tatamotors.com/',
   ENV_TYPE: 'TEST',
 };
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import {
+  Checkbox,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -12,6 +13,8 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Button } from '@tmlconnected/avant-garde-components-library';
+import { API_RESOURCE_URLS } from '../../constants';
+import { API } from '../../apis/api';
 import styles from "./AddDocument.module.css";
 import { ValidatingTextField, CustomSelect } from "../FormComponents";
 
@@ -48,6 +51,8 @@ function AddDocument({
   deleteDocument,
 }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [commodity, setCommodity] = useState(null);
+  const [ppaapLevel, setPpaapLevel] = useState(null);
   const [highlightMandatoryFields, setHighlightMandatoryFields] = useState(
     false
   );
@@ -74,6 +79,55 @@ function AddDocument({
     { value: "INTERNAL", label: "Internal" },
     { value: "EXTERNAL", label: "External" },
   ];
+
+  const [commodityOptions, setCommodityOptions] = useState([]);
+
+  async function getCommodityData() {
+    try {
+      const res = await API.get(API_RESOURCE_URLS.getPurchaseCommodity());
+      // console.log("getCommodityData", res.data);
+      return res.data.map(item => ({
+        value: item.id,
+        label: item.name
+      }));
+    } catch (error) {
+      console.error("Error fetching commodity data:", error);
+      return []; // return an empty array in case of an error
+    }
+  }
+  
+ useEffect(() => {
+  getCommodityData().then(options => {
+    setCommodityOptions(options);
+  });
+}, []);
+
+const [ppaapLevelOptions, setPpaapLevelOptions] = useState([]);
+
+async function getPpaapLevelData() {
+  try {
+    const res = await API.get(API_RESOURCE_URLS.getPpaapLevel());
+    // console.log("getPpaapLevelData", res.data);
+    return res.data.map(item => ({
+      value: item.code,
+      label: item.level
+    }));
+  } catch (error) {
+    console.error("Error fetching PPAP level data:", error);
+    return []; // return an empty array in case of an error
+  }
+}
+
+useEffect(() => {
+  getPpaapLevelData().then(options => {
+    setPpaapLevelOptions(options);
+  });
+}, []);
+
+useEffect(()=>{
+  getPpaapLevelData();
+})
+
 
   const getSelectedFields = () => ({
     name: name,
@@ -233,6 +287,28 @@ function AddDocument({
                   />
                 </div>
                 <div className={styles.formRow}>
+                  <label className={styles.label}>PPAP Level*</label>
+                  <CustomSelect
+                    name="ppaap level"
+                    isMandatory
+                    markIfUnselected={highlightMandatoryFields}
+                    resetAllVisitedFields={resetAllVisitedFields}
+                    options={ppaapLevelOptions}
+                    className={styles.selectStage}
+                    menuPosition="fixed"
+                    value={ppaapLevel}
+                    isMulti={false}
+                    isClearable
+                    // onChange={(e) =>
+                      // dispatch({ type: "update", field: "stage", value: e })
+                    // }
+                    onChange={(e) => setPpaapLevel(e)}
+                  />
+                </div>
+               
+              </div>
+              <div className={styles.formGroupRow}>
+              <div className={styles.formRow}>
                   <label className={styles.label}>Type*</label>
                   <CustomSelect
                     name="type"
@@ -248,6 +324,37 @@ function AddDocument({
                     onChange={(e) =>
                       dispatch({ type: "update", field: "type", value: e })
                     }
+                  />
+              </div>
+
+              <div className={styles.formRow}>
+                  <label className={styles.label} id="ctm-commodity" style={{paddingRight:'7px'}}>Commodity1</label>
+                  <CustomSelect
+  name="commodity"
+  isMandatory
+  markIfUnselected={highlightMandatoryFields}
+  resetAllVisitedFields={resetAllVisitedFields}
+  options={commodityOptions} // Use the commodityOptions state here
+  menuPosition="fixed"
+  className={clsx(styles.selectType)}
+  value={commodity}
+  // isMulti
+  isClearable
+  onChange={(e) => setCommodity(e)}
+  // onChange={(e) =>
+  //   dispatch({ type: "update", field: "type", value: e })
+  // }
+/>
+                </div>
+                            
+
+
+                <div className={styles.formRow}>
+                    <label className={styles.label}>Mandatory</label>
+                    <Checkbox
+                    size="small"
+                    className
+                    inputProps={{ 'data-testid': 'ismandatory' }}
                   />
                 </div>
               </div>

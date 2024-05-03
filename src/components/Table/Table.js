@@ -131,12 +131,13 @@ const Table = ({
   const syncListToTableHead = e => {
     vListRef.current.scrollLeft = e.target.scrollLeft;
   };
-
+ let diableCheckbox =false;
   useEffect(() => {
     // eslint-disable-next-line prefer-destructuring
     vListRef.current = document.getElementsByClassName(
       'ReactVirtualized__Grid ReactVirtualized__List',
     )[0];
+     
 
     if (vListRef.current)
       vListRef.current.addEventListener('scroll', handleListScroll);
@@ -147,6 +148,13 @@ const Table = ({
     // TODO: Fix this
     if(setAsnCount){
       setAsnCount(rowsData.filteredData.length);
+      const checkSessionkey = sessionStorage.getItem("disableCheckbox");
+      
+      if(checkSessionkey==="Y"){
+        diableCheckbox = true;
+      }else{
+        diableCheckbox = false;
+      }
     }
   }, [setAsnCount, rowsData]);
 
@@ -162,6 +170,7 @@ const Table = ({
     setIsEllipsisPopupOpen(false);
     setEllipsisAnchorEl(null);
   };
+  
 
   const toggleSelectAllRows = () =>
     {
@@ -202,7 +211,6 @@ const Table = ({
       setHasActiveEdits(areEditsActive);
     }
   }, [rowsData.data, setHasActiveEdits]);
-
   const defaultColumns = useMemo(
     () =>
       [
@@ -239,11 +247,11 @@ const Table = ({
                 data-testid={`select-row-${id}`}
                 id={`select-row-${id}`}
                 name={`select-row-${id}`}
+                disabled={diableCheckbox?(rowsData?.data?.filter(row => row.id===id)[0]?.editStatus)==='COMPLETE':false}
               />
             ),
-          }
+          } 
           : null,
-          
         ...originalDefaultColumns,
       ].filter(i => i),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -278,7 +286,7 @@ const Table = ({
       }
       : null
     ]
-  )
+  );
   const [selectedColumns, setSelectedColumns] = useState(defaultColumns);
 
   const noOfFixedColumns = primaryAction || secondaryActions?.length ? 2 : 1;

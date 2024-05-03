@@ -137,6 +137,10 @@ function ProcessDocument({
   const handleTerminatePopupOpen = () => setIsTerminatePopupOpen(true);
   const handleTerminatePopupClose = () => setIsTerminatePopupOpen(false);
 
+  const [isRevisePopupOpen, setIsRevisePopupOpen] = useState(false);
+  const handleRevisePopupOpen = () => setIsRevisePopupOpen(true);
+  const handleRevisePopupClose = () => setIsRevisePopupOpen(false);
+
   const handleDeleteOpen = () => setIsDeletePopupOpen(true);
   const handleDeleteClose = () => {
     setIsDeletePopupOpen(false);
@@ -1274,6 +1278,13 @@ function ProcessDocument({
           terminatePpap={handleTerminatePpap}
         />
       )}
+      {isRevisePopupOpen && (
+        <ReviseModal
+          isPopupOpen={isRevisePopupOpen}
+          handleClose={handleRevisePopupClose}
+          revisePpap={handleRevise}
+        />
+      )}
       <WarningModal
         open={isWarningOpen}
         handleClose={() => setIsWarningOpen(false)}
@@ -1314,12 +1325,16 @@ function ProcessDocument({
     },
   };
 
+
+  <div>status</div>
+  
+
   const sqLeadActionButtons = {
     secondaryActions: [
       {
         name: 'REVISE',
         classNames: { btn: styles.reviseButton },
-        actionFn: () => handleRevise(),
+        actionFn: () => handleRevisePopupOpen(),  // handleRevise(),
         showButton: requirementLinks && requirementLinks.REVISE,
       },
     ],
@@ -1402,6 +1417,62 @@ TerminateModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
   terminatePpap: PropTypes.func.isRequired,
 };
+
+
+
+function ReviseModal({ isPopupOpen, handleClose, revisePpap }) {
+  return (
+    <Dialog
+      open={isPopupOpen}
+      className={styles.popContainer}
+      classes={{
+        paper: styles.popupBox,
+      }}
+      data-testid='revise-popup'
+    >
+      <>
+        <DialogTitle>
+          <span className={styles.title}>
+            <span className={styles.txt}>Revise confirmation</span>
+          </span>
+        </DialogTitle>
+        <DialogContent className={styles.popupContent}>
+          <span style={{ lineHeight: '1.5em' }}>
+            Are you sure you would like to Revise?
+            <br />
+            Once confirmed it will be sent back.
+          </span>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            className={clsx(styles.actionButton, styles.transparentButton)}
+            onClick={handleClose}
+          >
+            CANCEL
+          </Button>
+          <Button
+            className={clsx(styles.actionButton, styles.primaryActionButton)}
+            variant='primary'
+            onClick={(e) => {
+              e?.preventDefault();
+              handleClose();
+              revisePpap();
+            }}
+          >
+            CONFIRM
+          </Button>
+        </DialogActions>
+      </>
+    </Dialog>
+  );
+}
+
+ReviseModal.propTypes = {
+  isPopupOpen: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  revisePpap: PropTypes.func.isRequired,
+};
+
 
 export default ProcessDocument;
 

@@ -37,7 +37,7 @@ export const overrideConsole = (oldConsole, user) => {
     },
     error: function (message, ...options) {
       if (message?.indexOf('Warning') === 0) {
-        console.warn(message, ...options);
+        // console.warn(message, ...options);
       } else {
         oldConsole.error(message, ...options);
         log(formattedMessage(message, ...options), LOG_LEVEL.ERROR, user);

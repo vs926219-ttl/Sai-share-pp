@@ -1,12 +1,12 @@
 .popContainer {
-    width: 620px;
+    width: 750px;
     /* padding: 50px 40px; */
     margin: 0 auto;
     border-radius: 0;
   }
   .popupBox {
     border-radius: 0;
-    width: 620px !important;
+    width: 750px !important;
   }
   .title {
     color: #fff;
@@ -38,7 +38,7 @@
     color: #707070;
     opacity: 1;
     margin-right: 10px;
-   
+    width: 60px;
   }
   
   .textInput {
@@ -56,7 +56,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     margin: 1em 0;
-    column-gap: 4.5em;
+    /* column-gap: 4.5em; */
     margin-bottom: 2.5em;
   }
   .formRow {
@@ -64,8 +64,8 @@
     align-items: center;
     margin-left: 5px;
     font-size: 14px;
-    /* width: 100%; */
-    gap: 20px;
+    width: 100%;
+    /* gap: 20px; */
     /* justify-content: space-between; */
   
   }
@@ -192,3 +192,6 @@
   .hoverWrapper {
     position: relative;
   }
+  label#ctm-commodity {
+    padding: 0px 7px 0px 0px !important;
+}

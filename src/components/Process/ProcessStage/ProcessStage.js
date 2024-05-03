@@ -707,6 +707,7 @@ function ProcessStage({
   const loadStageData = async () => {
 		try {
       const response = await API.get(links[state].href);
+      
 
 			const { data } = response;
       

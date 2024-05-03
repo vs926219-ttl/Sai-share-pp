@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unneeded-ternary */
 import React, { useEffect, useReducer, useState } from 'react'
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import clsx from 'clsx'
 import moment from 'moment'
@@ -13,16 +14,17 @@ import { Button } from '@tmlconnected/avant-garde-components-library';
 import styles from './CreateProjectForm.module.css'
 import { CustomDatePicker, CustomFormGroup, CustomSelect, ValidatingTextField } from '../FormComponents'
 import { API } from '../../apis/api'
-import { buildErrorMessage } from '../../apis/calls'
+import { buildErrorMessage, log } from '../../apis/calls'
 import { API_RESOURCE_URLS, DATE_FORMAT, DISPLAY_MESSAGES, MESSAGE_TYPE, RESOURCE_TYPE, USER_OPERATIONS, EDIT_STATUS } from '../../constants'
 import { AuthChecker } from '../../atomicComponents'
 import { withAllowedOperationsProvider } from '../../hocs'
 import { usePopupManager } from '../../providers/PopupManager/PopupManager';
 
+
 const initialState = {
   projectCode: '',
   projectName: '',
-  businessUnit: null,
+  // businessUnit: null,
   plants: null,
   vehicleLines: null,
   projectMilestones: [],
@@ -60,13 +62,29 @@ const reducer = (state, action) => {
 }
 
 function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable }) {
+
+
+  const [partDetail, setPartDetail] = useState([]);
+  const [selectedPartNo, setSelectedPartNo] = useState('');
+  const [plants, setPlants] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [sorNosValue, setSorNosValue] = useState([]);
+  const [selectedPlants, setSelectedPlants] = useState([]);
+  const [byProjectName, setByProjectName] = useState('');
+  const [byProjectCode, setByProjectCode] = useState('');
+  const [byVehicleLine, setByVehicleLine] = useState('');
+  const [sorNumbers, setSorNumbers] = useState([]);
+  const [showSorNumber, setShowSorNumber] = useState(false); 
+
+  const [businessUnit, setBusinessUnit] = useState('');
+
   const { showPopup } = usePopupManager();
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const { projectCode,
     projectName,
-    businessUnit,
-    plants,
+    // businessUnit,
+    // plants,
     vehicleLines,
     projectMilestones,
     vehicleProjections,
@@ -117,7 +135,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
 
   const handleOpen = () => setIsPopupOpen(true);
 
-  const resetFields = () => setResetAllVisitedFields(true);
+  // const resetFields = () => setResetAllVisitedFields(true);
 
   const loadData = async (setState, url, params) => {
     try {
@@ -130,8 +148,149 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
     }
   };
 
+
   const loadBusinessUnits = async () =>
     loadData(setAvailableBusinessUnits, API_RESOURCE_URLS.getAllBusinessUnits());
+
+  async function getPartNumber() {
+    const res = await API.get(API_RESOURCE_URLS.getAllBusinessUnits());
+    return res.data;
+  }
+ 
+    async function fetchPartDetail() { 
+      try {
+        const data = await getPartNumber();
+        setPartDetail(data);
+      } catch (error) {
+        console.error('Error fetching part details:', error);
+      }
+    }
+    useEffect(()=>{
+      fetchPartDetail();
+
+    })
+async function getPlantsDetailByPart(partNo) {
+  try {
+      const res = await API.get(`http://localhost:3000/ppap/projects/getPlants/${partNo}`);
+      return res.data; // Return plant data
+  } catch (error) {
+      console.error("Error:", error);
+      return []; // Return empty array in case of error
+  }
+}
+useEffect(() => {
+  async function fetchPlants() {
+      try {
+          if (selectedPartNo) {
+              const plantsData = await getPlantsDetailByPart(selectedPartNo);
+              const locations = plantsData.map(plant => plant.location);
+              console.log("Locations:", locations);
+              if (locations.length > 0) {
+                setSelectedLocation(locations[0]);
+              }
+              setPlants(plantsData); // Set plants data
+          }
+      } catch (error) {
+          console.error('Error fetching plants:', error);
+      }
+  }
+
+  fetchPlants();
+}, [selectedPartNo]);
+
+
+  useEffect(() => {
+    async function fetchPlants() {
+      try {
+        if (selectedPartNo) {
+          const plantsData = await getPlantsDetailByPart(selectedPartNo);
+          setPlants(plantsData);
+        }
+      } catch (error) {
+        console.error('Error fetching plants:', error);
+      }
+    }
+
+    fetchPlants();
+  }, [selectedPartNo]);
+
+  async function getSorNumberByPartAndLocation(partNo, location) {
+   
+    try {
+      const res = await API.get(`http://localhost:3000/ppap/projects/getSorNo/${partNo}/${location}`);
+      return res.data;
+      
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  }
+  useEffect(() => {
+    async function fetchSorNumber() {
+      try {
+        if (selectedPartNo && selectedLocation) {
+          const sorNumbersData = await getSorNumberByPartAndLocation(selectedPartNo, selectedLocation);
+          // console.log("new Comment", sorNumbersData);
+          setSorNumbers(sorNumbersData);
+          const sorNos = sorNumbersData.map(sor => sor.sorNo);
+          setSorNosValue(sorNos); 
+          const ProjectNameData = sorNumbersData.map(name => name.projectName);
+          const ProjectCodeData = sorNumbersData.map(name => name.projectCode);
+          const vehicleLineData = sorNumbersData.map(name => name.productLine);
+          console.log("Sor Numbers1:", vehicleLineData); // Log SOR numbers to console
+          if (ProjectNameData.length > 0) {
+            setByProjectName(ProjectNameData[0]);
+          }
+          if (ProjectCodeData.length > 0) {
+            setByProjectCode(ProjectCodeData[0]);
+          }
+          if (vehicleLineData.length > 0) {
+            setByVehicleLine(vehicleLineData[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching SOR numbers:', error);
+      }
+    }
+  
+    fetchSorNumber();
+  }, [selectedPartNo, selectedLocation]);
+
+  // Function to extract values for each location
+  const extractValuesByLocation = (location) => {
+    const values = {
+      year1: sorNumbers.map((item) => item[`${location}Year1`] || 0),
+      year2: sorNumbers.map((item) => item[`${location}Year2`] || 0),
+      year3: sorNumbers.map((item) => item[`${location}Year3`] || 0),
+      year4: sorNumbers.map((item) => item[`${location}Year4`] || 0),
+      year5: sorNumbers.map((item) => item[`${location}Year5`] || 0),
+    };
+     // If location is not the current one, set all other years to 0
+  if (location !== 'pun') {
+    ['year1', 'year2', 'year3', 'year4', 'year5'].forEach((year) => {
+      if (!values[year]) {
+        values[year] = Array(sorNumbers.length).fill(0);
+      }
+    });
+  }
+    return values;
+  };
+
+
+  const resetFields = () => {
+    // Reset all state variables holding selected values to their initial states
+    setSelectedPartNo('');
+    setSelectedLocation('');
+    // setSorNosValue([]);
+    setSelectedPlants([]);
+    setByProjectName('');
+    setByProjectCode('');
+    setByVehicleLine('');
+    setSorNumbers([]);
+    // resetProjectMilestones();
+    // Reset any other relevant state variables
+  };
+
 
   const loadPlants = async (businessUnitName) =>
     loadData(
@@ -152,8 +311,11 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
   const formatOptionsForPlantsSelect = (...options) =>
     options.map(({ value, label }) => ({ value, label }));
 
+  // const getBusinessUnitOptions = () =>
+  //   formatOptionsForSelect(...availableBusinessUnits.data.map(({ name }) => name));
+
   const getBusinessUnitOptions = () =>
-    formatOptionsForSelect(...availableBusinessUnits.data.map(({ name }) => name));
+  formatOptionsForSelect(...availableBusinessUnits.data);
 
   const getPlantsOptions = () =>
     formatOptionsForPlantsSelect(...availablePlants.data.map(({ name, code }) => ({
@@ -256,7 +418,6 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
     code: projectCode,
     name: projectName,
     businessUnit: businessUnit && businessUnit.value,
-    plantCodes: plants && plants.map(({ value }) => value),
     vehicleLines: vehicleLines && vehicleLines.map(({ value }) => value),
     projectMilestoneTimelines: getProjectMilestones(),
     vehicleProjections: getVehicleProjections(),
@@ -421,16 +582,22 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
       });
     }
   }
-
-  
-
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   const resetState = () => {
-    dispatch({ type: 'reset' })
+    dispatch({ type: 'reset' });
     setHighlightMandatoryFields(null);
-    setAvailablePlants({ loading: false, data: [] })
+    setSaveAsDraftHighlightMandatoryFields(false);
+    setAvailablePlants({ loading: false, data: [] });
     changeBackgroundColor('projectInfoBg');
     setResetAllVisitedFields(false);
+    setSelectedPartNo('');
+    setSelectedLocation('');
+    setSorNumbers([]);
+    setSorNosValue([]);
+    setByProjectName('');
+    setByProjectCode('');
+    setByVehicleLine('');
+  
   }
 
   useEffect(() => {
@@ -475,6 +642,83 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
       style={{ backgroundColor: projectInfoBg ? BG_COLOR : null }}
       onClick={() => changeBackgroundColor('projectInfoBg')}
     >
+ <div className={clsx(styles.formGroupRow, styles.projectInfoFormGroupRow)}>
+        <div className={styles.formRow}>
+          <label className={styles.label}>
+            Part #
+          </label>
+            <select
+        name="partNo"
+        id="partNoField"
+        value={selectedPartNo}
+        onChange={(e) => {
+          setSelectedPartNo(e.target.value)
+        }}
+        className={clsx(styles.select, styles.sel1, 'customField')}
+        style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 10px", borderRadius: '4px'}}
+      >
+        <option value="">Select...</option>
+        {partDetail.map((partNo) => (
+          <option key={partNo} value={partNo}>
+            {partNo}
+          </option>
+        ))}
+      </select>
+      {/* <CustomSelect
+  name="partNo"
+  value={selectedPartNo}
+  onChange={(selectedOption) => setSelectedPartNo(selectedOption)}
+  options={partDetail.map(partNo => ({ value: partNo, label: partNo }))}
+  className={clsx(styles.select, styles.sel1, 'customField')}
+  style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 10px", borderRadius: '4px'}}
+  isMandatory// or false
+  markIfUnselected={highlightMandatoryFields}
+  resetAllVisitedFields={resetAllVisitedFields}
+  isMulti
+  isClearable
+  isDisabled={isEditable ? false : true}
+/> */}
+        </div>
+        <div className={styles.formRow}>
+          <label className={styles.label}>
+            Plants*
+          </label>
+         <CustomSelect
+    name="plants"
+    isMandatory
+    markIfUnselected={highlightMandatoryFields}
+    options={plants.map(plant => ({ value: plant.name, label: plant.name }))}
+    className={clsx(styles.select, styles.sel1, styles.sel2)}
+    value={selectedPlants}
+    resetAllVisitedFields={resetAllVisitedFields}
+    // isMulti
+    isClearable
+    onChange={(selection) => {
+      setSelectedPlants(selection);
+      dispatch({ type: 'update', field: 'plants', value: selection })
+  }}
+    isDisabled={!isEditable}
+/>
+        
+        </div>
+        <div className={styles.formRow}>
+          <label className={styles.label}>
+            SOR #
+          </label>
+          <CustomSelect
+            name="sorNumbers"
+            isMandatory
+            markIfUnselected={highlightMandatoryFields}
+            options={sorNosValue.map(sorNo => ({ value: sorNo, label: sorNo }))}
+            className={clsx(styles.select, styles.sel1)}
+            resetAllVisitedFields={resetAllVisitedFields}
+            // isMulti
+            isClearable
+            isDisabled={isEditable? false:true}
+          />
+        </div>
+      </div>
+
       <div className={clsx(styles.formGroupRow, styles.projectInfoFormGroupRow)}>
         <div className={styles.formRow}>
           <label className={styles.label}>
@@ -488,7 +732,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             validationHelperText="error occured"
             variant="outlined"
             size="small"
-            value={projectCode}
+            value={byProjectCode}
             resetAllVisitedFields={resetAllVisitedFields}
             onChange={(e) => dispatch({ type: 'update', field: 'projectCode', value: e.target.value })}
             placeholder="Enter Project Code"
@@ -514,9 +758,10 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             validationHelperText="error occured"
             variant="outlined"
             size="small"
-            value={projectName}
+            value={byProjectName}
             resetAllVisitedFields={resetAllVisitedFields}
-            onChange={(e) => dispatch({ type: 'update', field: 'projectName', value: e.target.value })}
+            // onChange={(e) => dispatch({ type: 'update', field: 'projectName', value: e.target.value })}
+           onChange={(e) => setByProjectName(e.target.value)}
             placeholder="Enter Project Name"
             className={styles.textField}
             inputProps={{
@@ -528,13 +773,11 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             }}
           />
         </div>
-      </div>
-      <div className={clsx(styles.formGroupRow, styles.projectInfoFormGroupRow)}>
         <div className={styles.formRow}>
           <label className={styles.label}>
             Business Unit*
           </label>
-          <CustomSelect
+          {/* <CustomSelect
             name="business-unit"
             isMandatory
             markIfUnselected={highlightMandatoryFields}
@@ -550,31 +793,21 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               }
             }}
             isDisabled={isEditable? false:true}
-          />
+          /> */}
+          
+         <input type="text" value="CVBU" readOnly
+          className={clsx(styles.select, styles.sel1, 'customField')}
+          style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 0px", borderRadius: '4px'}}
+         
+         />
         </div>
-        <div className={styles.formRow}>
-          <label className={styles.label}>
-            Plants*
-          </label>
-          <CustomSelect
-            name="plants"
-            isMandatory
-            markIfUnselected={highlightMandatoryFields}
-            options={getPlantsOptions()}
-            className={clsx(styles.select, styles.sel1, styles.sel2)}
-            value={plants}
-            resetAllVisitedFields={resetAllVisitedFields}
-            isMulti
-            isClearable
-            onChange={(selection) => dispatch({ type: 'update', field: 'plants', value: selection })}
-            isDisabled={isEditable? false:true}
-          />
-        </div>
+      </div>
+      <div className={clsx(styles.formGroupRow, styles.projectInfoFormGroupRow)}>
         <div className={styles.formRow}>
           <label className={styles.label}>
             Vehicle Line*
           </label>
-          <CustomSelect
+          {/* <CustomSelect
             name="vehicle-line"
             isMandatory
             markIfUnselected={highlightMandatoryFields}
@@ -586,6 +819,36 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
             isClearable
             onChange={(selection) => dispatch({ type: 'update', field: 'vehicleLines', value: selection })}
             isDisabled={isEditable? false:true}
+          /> */}
+            <input type="text" 
+             className={clsx(styles.select, styles.sel1, 'customField')}
+             style={{ border: '1px solid darkgrey',  color: 'darkgrey',  padding:"9px 10px", borderRadius: '4px'}}
+            value={byVehicleLine} onChange={(e) => setByVehicleLine(e.target.value)} />
+        </div>
+        <div className={styles.formRow}>
+          <label className={styles.label}>
+             VC #  
+          </label>
+          <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value.length > 0}
+            markIfEmpty={highlightMandatoryFields || saveAsDraftHighlightMandatoryFields}
+            validationHelperText="error occured"
+            variant="outlined"
+            size="small"
+            value={projectName}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => dispatch({ type: 'update', field: 'projectName', value: e.target.value })}
+            placeholder="Enter VC"
+            className={styles.textField}
+            inputProps={{
+              className: clsx(styles.textInput, styles.projectInfoTextInput),
+              "data-testid": "project-name-input",
+            }}
+            FormHelperTextProps={{
+              className: styles.helperText,
+            }}
           />
         </div>
       </div>
@@ -596,7 +859,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
 		<div
 			className={styles.formGroup}
 			style={{
-				paddingRight: '30%',
+				// paddingRight: '30%',
 				backgroundColor: projectMilestoneBg ? BG_COLOR : null,
 			}}
 			onClick={() => changeBackgroundColor('projectMilestoneBg')}
@@ -649,30 +912,28 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
       className={styles.formGroup}
       style={{
         paddingRight: '50%',
-        backgroundColor: vehicleProjectionBg ? BG_COLOR : null
+        backgroundColor: vehicleProjectionBg ? BG_COLOR : null,
+        overflowX: 'auto',
       }}
-      onClick={() => changeBackgroundColor('vehicleProjectionBg')}
+      // onClick={() => changeBackgroundColor('vehicleProjectionBg')}
     >
-      <div className={clsx(styles.formGroupRow, styles.projectMilestoneformGroupRow)}>
+     
+      {/* <div className={clsx(styles.formGroupRow, styles.projectMilestoneformGroupRow)}>
         <h6 className={styles.projectMilestoneHeaderTitle}>SN</h6>
-        <h6 className={styles.projectMilestoneHeaderTitle}>Year</h6>
-        <h6 className={styles.projectMilestoneHeaderTitle}>Quantity</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Pune CVBU</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Pune PVBU</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Jamshedpur</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Lucknow</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Pantnagar</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Sanand</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Dharwad</h6>
+        <h6 className={styles.projectMilestoneHeaderTitle}>Grand Total</h6>
       </div>
+    
       {vehicleProjections.map(({ sn, count, year }, index, projections) => (
         <div key={sn} className={clsx(styles.formGroupRow, styles.projectMilestoneformGroupRow)}>
           <label className={styles.label}>{sn}*</label>
-          <CustomSelect
-            name={`vehicle-projection-select-${index + 1}`}
-            isMandatory
-            markIfUnselected={highlightMandatoryFields}
-            options={getYearOptions(index, projections)}
-            className={styles.select}
-            value={year}
-            resetAllVisitedFields={resetAllVisitedFields}
-            onChange={(selection) => updateVehicleProjection(count, selection, index, 'year')}
-            isDisabled={isEditable? false:true}
-          />
-          <ValidatingTextField
+          {/* <ValidatingTextField
             isDisabled={isEditable? false:true}
             isMandatory
             validationFn={(value) => value > 0}
@@ -688,7 +949,7 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
                 e?.preventDefault();
               }
             }}
-            placeholder="Enter Quantity"
+            placeholder="Pune CVBU"
             className={styles.textField}
             inputProps={{
               className: styles.textInput,
@@ -696,10 +957,228 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
               min: 0,
               "data-testid": `vehicle-projection-input-${index + 1}`,
             }}
-          />
-        </div>
-      ))}
-    </div>
+          /> */}
+           {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Pune PVBU"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+           {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Jamshedpur"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+           {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Lucknow"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+           {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Pantnagar"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+           {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Sanand"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+           {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Dharwad"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+             {/* <ValidatingTextField
+            isDisabled={isEditable? false:true}
+            isMandatory
+            validationFn={(value) => value > 0}
+            variant="outlined"
+            size="small"
+            type="number"
+            markIfEmpty={highlightMandatoryFields}
+            value={count}
+            resetAllVisitedFields={resetAllVisitedFields}
+            onChange={(e) => updateVehicleProjection(e.target.value, year, index, 'count')}
+            onKeyPress={(e) => {
+              if (e?.key === '-' || e?.key === '+') {
+                e?.preventDefault();
+              }
+            }}
+            placeholder="Grand Total"
+            className={styles.textField}
+            inputProps={{
+              className: styles.textInput,
+              step: 1,
+              min: 0,
+              "data-testid": `vehicle-projection-input-${index + 1}`,
+            }}
+          /> */}
+         {/* </div> */}
+      {/* // ))} */}
+      <div className={styles.tableContainer}>
+    <table className={`${styles.customTable} my-custom-class`}>
+      <thead>
+        <tr className='my-table-row'>
+          <th className={styles.smallFont}>SN</th>
+          <th className={styles.smallFont}>Pune CVBU</th>
+          <th className={styles.smallFont}>Pune PVBU</th>
+          <th className={styles.smallFont}>Jamshedpur</th>
+          <th className={styles.smallFont}>Lucknow</th>
+          <th className={styles.smallFont}>Pantnagar</th>
+          <th className={styles.smallFont}>Sanand</th>
+          <th className={styles.smallFont}>Dharwad</th>
+          <th className={styles.smallFont}>Grand Total</th>
+        </tr>
+      </thead>
+      <tbody>
+      {[1, 2, 3, 4, 5].map((yearIndex) => (
+      <tr key={yearIndex} className={styles.customTableRow}>
+    <td>Year {yearIndex}</td>
+    <td key={`pun-year-${yearIndex}`}>{extractValuesByLocation('pun')[`year${yearIndex}`]}</td>
+    <td key={`pun-year-${yearIndex}`}>{extractValuesByLocation('pun')[`year${yearIndex}`]}</td>
+    <td key={`jsr-year-${yearIndex}`}>{extractValuesByLocation('jsr')[`year${yearIndex}`]}</td>
+    <td key={`lkw-year-${yearIndex}`}>{extractValuesByLocation('lkw')[`year${yearIndex}`]}</td>
+    <td key={`pnt-year-${yearIndex}`}>{extractValuesByLocation('pnt')[`year${yearIndex}`]}</td>
+    <td key={`san-year-${yearIndex}`}>{extractValuesByLocation('san')[`year${yearIndex}`]}</td>
+    <td key={`dhw-year-${yearIndex}`}>{extractValuesByLocation('dhw')[`year${yearIndex}`]}</td>
+    <td>
+      {extractValuesByLocation('pun')[`year${yearIndex}`] +
+        extractValuesByLocation('pun')[`year${yearIndex}`] +
+        extractValuesByLocation('jsr')[`year${yearIndex}`] +
+        extractValuesByLocation('lkw')[`year${yearIndex}`] +
+        extractValuesByLocation('pnt')[`year${yearIndex}`] +
+        extractValuesByLocation('san')[`year${yearIndex}`] +
+        extractValuesByLocation('dhw')[`year${yearIndex}`]}
+    </td>
+  </tr>
+))}
+
+
+      </tbody>
+    </table>
+</div>
+    </div> 
+    
   )
 
   const renderRemarkElement = () => (
@@ -742,7 +1221,10 @@ function CreateProjectForm({ redirectToProjectMasterPage, projectId, isEditable 
         <Button
           className={clsx(styles.actionButton, styles.resetButton)}
           variant="tertiary"
-          onClick={handleOpen}
+          onClick={() => {
+            handleOpen(); // Open reset confirmation modal if needed
+            resetFields(); // Reset selected fields
+          }}
         >
           RESET
         </Button>

@@ -2997,3 +2997,13 @@ describe('test approve and revise stage', () => {
     })
   });
 });
+
+
+// it('should button not enabled untill details filled', async () => {
+//   render(
+//     <Process/>
+//   );
+//   const button = await getByText("NEW PROCESS")
+//   fireEvent.click(button);
+
+// })

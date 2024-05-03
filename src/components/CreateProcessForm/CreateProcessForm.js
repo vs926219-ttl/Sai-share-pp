@@ -664,6 +664,78 @@ function CreateProcessForm({ redirectToProcessPage }) {
 			onClick={() => changeBackgroundColor('processInfoBg')}
 		>
 			<div className={styles.formGroupRow}>
+			<div className={styles.formRow}>
+					<label className={styles.label}>Part no*</label>
+					<CustomSelect
+						name="part"
+						isMandatory
+						markIfUnselected={highlightMandatoryFields}
+						resetAllVisitedFields={resetAllVisitedFields}
+						options={getPartsOptions()}
+						className={clsx(styles.select, styles.sel1)}
+						value={part}
+						isMulti={false}
+						isClearable
+						onChange={(e) => {
+							dispatch({ type: 'update', field: 'part', value: e });
+							if (supplierCode) resetSupplier();
+							if (poData.data.length) resetTableData();
+						}}
+					/>
+				</div>
+				<div className={styles.formRow}>
+					<label className={styles.label}>Supplier*</label>
+					<CustomSelect
+						name="supplier"
+						isMandatory
+						markIfUnselected={highlightMandatoryFields}
+						resetAllVisitedFields={resetAllVisitedFields}
+						options={getPartsOptions()}
+						className={clsx(styles.select, styles.sel1)}
+						value={part}
+						isMulti={false}
+						isClearable
+						onChange={(e) => {
+							dispatch({ type: 'update', field: 'part', value: e });
+							if (supplierCode) resetSupplier();
+							if (poData.data.length) resetTableData();
+						}}
+					/>
+				</div>
+				<div className={styles.formRow}>
+					<label className={styles.label}>Revision*</label>
+					<CustomSelect
+						name="revision"
+						isMandatory
+						markIfUnselected={highlightMandatoryFields}
+						resetAllVisitedFields={resetAllVisitedFields}
+						options={getPartsOptions()}
+						className={clsx(styles.select, styles.sel1)}
+						value={part}
+						isMulti={false}
+						isClearable
+						onChange={(e) => {
+							dispatch({ type: 'update', field: 'part', value: e });
+							if (supplierCode) resetSupplier();
+							if (poData.data.length) resetTableData();
+						}}
+					/>
+				</div>
+			</div>
+			<div className={styles.formGroupRow}>
+			<div className={styles.formRow}>
+					<label className={styles.label}>PPAP Reason*</label>
+                  <CustomSelect
+                    name="ppap-reason"
+					isMandatory
+                    markIfUnselected={highlightMandatoryFields}
+					resetAllVisitedFields={resetAllVisitedFields}
+                    options={getPpapReasonOptions()}
+                    className={clsx(styles.select, styles.sel1)}
+                    value={ppapReason}
+                    onChange={(selection) => dispatch({ type: 'update', field: 'ppapReason', value: selection })} />
+
+				</div>
 				<div className={styles.formRow}>
 					<label className={styles.label}>Plant*</label>
 					<CustomSelect
@@ -686,37 +758,25 @@ function CreateProcessForm({ redirectToProcessPage }) {
 					/>
 				</div>
 				<div className={styles.formRow}>
-					<label className={styles.label}>Part no*</label>
+					<label className={styles.label}>AQ commodity*</label>
 					<CustomSelect
-						name="part"
+						name="aqCommodity"
 						isMandatory
 						markIfUnselected={highlightMandatoryFields}
 						resetAllVisitedFields={resetAllVisitedFields}
-						options={getPartsOptions()}
+						options={getAqCommodityOptions()}
 						className={clsx(styles.select, styles.sel1)}
-						value={part}
+						value={aqCommodity}
 						isMulti={false}
 						isClearable
-						onChange={(e) => {
-							dispatch({ type: 'update', field: 'part', value: e });
-							if (supplierCode) resetSupplier();
-							if (poData.data.length) resetTableData();
-						}}
+						onChange={(e) =>
+							dispatch({ type: 'update', field: 'aqCommodity', value: e })
+						}
 					/>
 				</div>
-				<div className={styles.formRow}>
-					<label className={styles.label}>PPAP Reason*</label>
-                  <CustomSelect
-                    name="ppap-reason"
-					isMandatory
-                    markIfUnselected={highlightMandatoryFields}
-					resetAllVisitedFields={resetAllVisitedFields}
-                    options={getPpapReasonOptions()}
-                    className={clsx(styles.select, styles.sel1)}
-                    value={ppapReason}
-                    onChange={(selection) => dispatch({ type: 'update', field: 'ppapReason', value: selection })} />
 
-				</div>
+
+
 			</div>
 			<div className={styles.formGroupRow}>
 				<div className={styles.formRow}>
@@ -736,7 +796,20 @@ function CreateProcessForm({ redirectToProcessPage }) {
 						}
 					/>
 				</div>
-				<div className={styles.formRow} style={{ position: 'relative' }}>
+				<div className={styles.formRow}>
+					<label className={styles.label}>AQ name</label>
+					<div style={{ width: '55%' }} className={styles.disableInput}>
+						{supplierName}
+					</div>
+				</div>
+				<div className={styles.formRow}>
+					<label className={styles.label}>CQ name</label>
+					<div style={{ width: '55%' }} className={styles.disableInput}>
+						{supplierName}
+					</div>
+				</div>
+				
+				{/* <div className={styles.formRow} style={{ position: 'relative' }}>
 					<label className={styles.label}>Purchase buyer name*</label>
 					<ValidatingTextField
 						style={{ width: '60%' }}
@@ -762,24 +835,8 @@ function CreateProcessForm({ redirectToProcessPage }) {
 					{errors && errors['purchaseBuyerName'] && (
 						<span className={styles.error}>{errors['purchaseBuyerName']}</span>
 					)}
-				</div>
-				<div className={styles.formRow}>
-					<label className={styles.label}>AQ commodity*</label>
-					<CustomSelect
-						name="aqCommodity"
-						isMandatory
-						markIfUnselected={highlightMandatoryFields}
-						resetAllVisitedFields={resetAllVisitedFields}
-						options={getAqCommodityOptions()}
-						className={clsx(styles.select, styles.sel1)}
-						value={aqCommodity}
-						isMulti={false}
-						isClearable
-						onChange={(e) =>
-							dispatch({ type: 'update', field: 'aqCommodity', value: e })
-						}
-					/>
-				</div>
+				</div> */}
+			
 			</div>
 		</div>
 	);
@@ -1034,6 +1091,10 @@ function CreateProcessForm({ redirectToProcessPage }) {
 		}
 	};
 
+	const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false);
+	const handleSubmitPopupOpen = () => setIsSubmitPopupOpen(true);
+	const handleSubmitPopupClose = () => setIsSubmitPopupOpen(false);
+
 	const resetTableData = () => {
 		// setRowsData(prev => ({
 		//   ...prev,
@@ -1130,7 +1191,7 @@ function CreateProcessForm({ redirectToProcessPage }) {
 						<Button
 							className={clsx(styles.actionButton, styles.primaryActionButton)}
 							variant="primary"
-							onClick={() => runPreSubmissionChecks() && handleSubmit()}
+							onClick={() => runPreSubmissionChecks() && handleSubmitPopupOpen()}
 							disabled={!isAuthorized || !supplierRepresentativeName || !mandatoryFields}
 							data-testid="confirm-action"
 						>
@@ -1144,6 +1205,13 @@ function CreateProcessForm({ redirectToProcessPage }) {
 				handleClose={handleClose}
 				resetFields={resetFields}
 			/>
+			 {isSubmitPopupOpen && (
+        <SubmitModal
+          isPopupOpen={isSubmitPopupOpen}
+          handleClose={handleSubmitPopupClose}
+          submitPpap={handleSubmit}
+        />
+      )}
 		</>
 	);
 }
@@ -1201,6 +1269,58 @@ ResetModal.propTypes = {
 	handleClose: PropTypes.func.isRequired,
 	resetFields: PropTypes.func.isRequired,
 };
+
+function SubmitModal({ isPopupOpen, handleClose, submitPpap }) {
+	return (
+	  <Dialog
+		open={isPopupOpen}
+		className={styles.popContainer}
+		classes={{
+		  paper: styles.popupBox,
+		}}
+		data-testid='submit-popup'
+	  >
+		<>
+		  <DialogTitle>
+			<span className={styles.title}>
+			  <span className={styles.txt}>Submit confirmation</span>
+			</span>
+		  </DialogTitle>
+		  <DialogContent className={styles.popupContent}>
+			<span style={{ lineHeight: '1.5em' }}>
+			  Are you sure you would like to Submit?
+			</span>
+		  </DialogContent>
+		  <DialogActions>
+			<Button
+			  className={clsx(styles.actionButton, styles.transparentButton)}
+			  onClick={handleClose}
+			>
+			  CANCEL
+			</Button>
+			<Button
+			  className={clsx(styles.actionButton, styles.primaryActionButton)}
+			  variant='primary'
+			  onClick={(e) => {
+				e?.preventDefault();
+				handleClose();
+				submitPpap();
+			  }}
+			>
+			  CONFIRM
+			</Button>
+		  </DialogActions>
+		</>
+	  </Dialog>
+	);
+  }
+  
+  SubmitModal.propTypes = {
+	isPopupOpen: PropTypes.bool.isRequired,
+	handleClose: PropTypes.func.isRequired,
+	submitPpap: PropTypes.func.isRequired,
+  };
+  
 
 export default withAllowedOperationsProvider(
 	CreateProcessForm,

@@ -38,11 +38,11 @@ function DocumentMaster() {
 	const [loading, setLoader] = useState(false);
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 	const [isWarningOpen, setIsWarningOpen] = useState(false);
-	const [selectedRows, setSelectedRows] = useState({});
+	const [selectedRows, setSelectedRows] = useState([]);
 
 	const openWarning = (selectedRow) => {
 		setIsWarningOpen(true);
-		setSelectedRows(selectedRow[0]);
+		setSelectedRows([selectedRow]);
 	};
 
 	const handleOpen = () => setIsPopupOpen(true);
@@ -105,6 +105,22 @@ function DocumentMaster() {
 		},
 		{
 			width: 160,
+			title: 'Commodity',
+			field: 'Commodity',
+			enableSearch: true,
+			enableFilter: true,
+			render: (row) => {
+				if (Array.isArray(row.commodity) && row.commodity.length > 0) {
+				  return row.commodity.join(', ');
+				}
+				  return 'N/A';
+				
+			  },
+			
+			
+		},
+		{
+			width: 160,
 			title: 'Type',
 			field: 'documentType',
 			enableSearch: true,
@@ -120,6 +136,20 @@ function DocumentMaster() {
 		{
 			width: 160,
 			title: 'Updated by',
+			field: 'updatedBy',
+			enableSearch: true,
+			enableFilter: true,
+		},
+		{
+			width: 160,
+			title: 'PPAP Level',
+			field: 'updatedBy',
+			enableSearch: true,
+			enableFilter: true,
+		},
+		{
+			width: 160,
+			title: 'IS Mandatory',
 			field: 'updatedBy',
 			enableSearch: true,
 			enableFilter: true,
@@ -163,6 +193,7 @@ function DocumentMaster() {
 			}));
 
 			const response = await API.get(API_RESOURCE_URLS.STAGE_DOCUMENTS);
+			console.log("My response", response);
 
 			const { data: documentsList } = response;
 			const processedDocumentList = documentList(documentsList);
@@ -321,18 +352,97 @@ function DocumentMaster() {
 		}
 	};
 
-	const confirmDelete = async () => {
-		const { links } = selectedRows;
-		const deleteLink = links.find(({ rel }) => rel === 'delete');
-		setLoader(true);
+	// const confirmDelete = async () => {
+	// 	const { links } = selectedRows;
+	// 	const deleteLink = links.find(({ rel }) => rel === 'delete');
+	// 	setLoader(true);
+	// 	try {
+	// 		await API.delete(deleteLink.href);
+	// 		showPopup({
+	// 			type: MESSAGE_TYPE.SUCCESS,
+	// 			contextText: 'Document deleted successfully.',
+	// 		});
+	// 		setLoader(false);
+	// 		loadAllDocuments();
+	// 	} catch (error) {
+	// 		console.error(buildErrorMessage(error));
+	// 		showPopup({
+	// 			type: MESSAGE_TYPE.FAILURE,
+	// 			contextText: DISPLAY_MESSAGES.DELETE_FILE,
+	// 			info: 'Document delete failed.',
+	// 			error,
+	// 		});
+	// 		setLoader(false);
+	// 	}
+	// };
+	// 	const deleteDocument = async (data) => {
+	//     const { document } = data;
+	// 	const { links } = document;
+	// 	const deleteUrl = links.find(x => x.rel === 'DELETE');
+
+	// 	try {
+	// 		const response = await API.delete(deleteUrl.href);
+	
+	// 		if( response && response.data){
+	// 			setDocumentData(response.data);
+	// 			showPopup({
+	// 				type: MESSAGE_TYPE.SUCCESS,
+	// 				contextText: 'Document deleted successfully',
+	// 			});
+	// 			setselectedData(null)
+	// 		}
+	// 	} catch (error) {
+	// 			console.error(buildErrorMessage(error));
+	// 	}
+	// }
+	const deleteDocument = async (data) => {
 		try {
-			await API.delete(deleteLink.href);
+			if (!data || !data.document || !data.document.links) {
+				throw new Error("Invalid data object or missing document links");
+			}
+	
+			const { document } = data;
+			const { links } = document;
+			const deleteUrl = links.find(x => x.rel === 'DELETE');
+	
+			if (!deleteUrl) {
+				throw new Error("Delete URL not found in document links");
+			}
+	
+			const response = await API.delete(deleteUrl.href);
+	
+			if (response && response.data) {
+				setDocumentData(response.data);
+				showPopup({
+					type: MESSAGE_TYPE.SUCCESS,
+					contextText: 'Document deleted successfully',
+				});
+				setselectedData(null);
+			} else {
+				throw new Error("Response data is missing");
+			}
+		} catch (error) {
+			console.error(buildErrorMessage(error));
+		}
+	};
+	
+
+	const confirmDelete = async () => {
+		try {
+			const updatedData = rowsData.data.filter((row) => {
+				const selectedRowIds = selectedRows.map((selectedRow) => selectedRow.id);
+				return !selectedRowIds.includes(row.id);
+			});
+			setRowsData((prevData) => ({
+				...prevData,
+				data: updatedData,
+			}));
 			showPopup({
 				type: MESSAGE_TYPE.SUCCESS,
 				contextText: 'Document deleted successfully.',
 			});
-			setLoader(false);
-			loadAllDocuments();
+			setIsWarningOpen(false);
+			deleteDocument(selectedRows[0]);
 		} catch (error) {
 			console.error(buildErrorMessage(error));
 			showPopup({
@@ -341,7 +451,6 @@ function DocumentMaster() {
 				info: 'Document delete failed.',
 				error,
 			});
-			setLoader(false);
 		}
 	};
 
@@ -353,26 +462,7 @@ function DocumentMaster() {
 		if (ppapStages && ppapStages.length === 0) getPPAPStages();
 	}, [ppapStages]);
 
-	const deleteDocument = async (data) => {
-	    const { document } = data;
-		const { links } = document;
-		const deleteUrl = links.find(x => x.rel === 'DELETE');
 
-		try {
-			const response = await API.delete(deleteUrl.href);
-	
-			if( response && response.data){
-				setDocumentData(response.data);
-				showPopup({
-					type: MESSAGE_TYPE.SUCCESS,
-					contextText: 'Document deleted successfully',
-				});
-				setselectedData(null)
-			}
-		} catch (error) {
-				console.error(buildErrorMessage(error));
-		}
-	}
 
 	useEffect(() => {
 		loadAllDocuments();

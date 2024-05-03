@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import styles from './ProjectMaster.module.css';
@@ -102,6 +102,13 @@ function ProjectMaster() {
       field: 'projectCreationDate',
       enableSearch: true,
       enableFilter: true,
+    },
+    {
+      width: 180,
+      title: 'Status',
+      field: 'editStatus',
+      enableSearch: true,
+      enableFilter: true,
     }
   ]
 
@@ -113,7 +120,7 @@ function ProjectMaster() {
   const redirectToProjectEditPage = (id) => history.push(`/create-project/${id}`);
   const redirectToProjectDetailsPage = (id) => history.push(`/project-details/${id}`);
 
-  const setCount = count => {
+  const setCount = count => { 
     setProjectCount(count);
   };
 
@@ -161,8 +168,9 @@ function ProjectMaster() {
       );
 
       const { data: projectList } = response;
+      
       const processedProjectList = processProjectList(projectList);
-
+      
       setRowsData({
         data: processedProjectList,
         filteredData: processedProjectList,
@@ -178,7 +186,15 @@ function ProjectMaster() {
       });
     }
   };
-
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    sessionStorage.setItem("disableCheckbox","Y");
+    return () => {
+        mounted.current = false;
+    sessionStorage.removeItem("disableCheckbox");
+    };
+}, []);
   useAjaxCallbackWithIntervals(
     rowsData.loading,
     loadAllProjects,
@@ -225,7 +241,7 @@ function ProjectMaster() {
 							{ 
 								name: 'Edit',
 								authOperation: USER_OPERATIONS.CREATE_PROJECT,
-								shouldEnable: selected => selected.length === 1,
+								shouldEnable: selected => (selected.length === 1 && selected[0].editStatus !=='COMPLETE'),
 								actionFn: selected => redirectToProjectEditPage(selected[0].id) ,
 							}
 						]}
@@ -238,6 +254,7 @@ function ProjectMaster() {
       </div>
     </>
   );
+ 
 }
 
 export default withAllowedOperationsProvider(

@@ -22,13 +22,13 @@
 
 .formGroupRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(9, 1fr);
   margin: 1em 0;
   column-gap: 1em;
 }
 
 .projectInfoFormGroupRow {
-  grid-template-columns: repeat(3, 27%);
+  grid-template-columns: repeat(3, 30%);
 }
 
 .formRow {
@@ -45,6 +45,7 @@
   letter-spacing: 0px;
   color: #707070;
   opacity: 1;
+  width: 100px;
 }
 
 .textField {
@@ -85,7 +86,7 @@
 }
 
 .sel1 {
-  width: 246px;
+  width: 240px;
 }
 .sel2 {
   height: 100%;
@@ -100,7 +101,7 @@
 }
 
 .projectMilestoneHeaderTitle {
-  text-align: left;
+  text-align: center;
   letter-spacing: 0px;
   color: #707070;
   opacity: 1;
@@ -209,3 +210,5 @@
   margin-top: -15px;
   margin-bottom: 5px;
 }
+
+
